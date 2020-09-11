@@ -1,25 +1,19 @@
-// const serializeAnimal = require('./serializeAnimal');
-// const Errormsg = require('../../errmsg');
-// const pageAnimals = require('./pageAnimals');
-// const searchAnimals = require('./searchAnimals');
-// const sortAnimals = require('./sortAnimals');
-const knex = require('../../../knex/knex.js');
+const Errormsg = require('../../errmsg');
+const getAllAnimalsService = require('../../services/animal/getAllAnimals');
 const getAnimals = async (req, res, next)=>
   {
     try {
-      var x = 'nIm'
-      var perPage = 5;
-      var page = req.query.page == undefined ? 1 : req.query.page;
-      var pageSkip = parseInt(page) - parseInt(1);
-      var animals = await knex('animals')
-        .select('animals.*', 'status.name AS statName')
-        .leftJoin('status', 'animals.status_id', 'status.id')
-        .where('animals.name', 'ilike', `%${x}%`)
-        .limit(perPage).offset(pageSkip*perPage)
-        .orderBy('animals.id');
-      res.status(200).json(animals);
+      var animals = await getAllAnimalsService(req);
+      if (animals.length == 0) {
+        res.status(200).json({message: 'No data.'});
+      } else {
+        var animalResults = {}
+        animalResults['_this'] = req.originalUrl;
+        animalResults['results'] = animals;
+        res.status(200).json(animalResults);
+      }
     } catch (error) {
-      console.log(error);
+      Errormsg(error, res);
     }
   }
 module.exports = getAnimals;
