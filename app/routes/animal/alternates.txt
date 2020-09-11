@@ -1,0 +1,71 @@
+  // *** ALTERNATE TO DELETE ANIMAL ***//
+    // var pull = {'$pull': {animal_ids:req.params.id}};
+    // Type.findOneAndUpdate({animal_ids:req.params.id}, pull, updateValidation).exec(function(err, result)
+    // {
+    //   try {
+    //     if (result === null) throw err;
+    //     if (err) throw err;
+    //     console.log(result);
+    //     Animal.findByIdAndDelete(req.params.id).exec(function (err) 
+    //     {
+    //       if (err) throw err;
+    //       res.status(200).send({message:'Animal deleted.'});
+    //     });
+    //   } catch (err) {
+    //     res.status(400).json({message:'An error has occured in deleting data.'});
+    //   }
+    // });
+
+
+    // *** ALTERNATIVE TO CREATE ANIMAL *** //
+// animal.save(function (err,result) 
+// {
+//   try {
+//     if (err) throw err;
+//     Type.findOneAndUpdate({_id:animal.type_id}, update).exec(function(err) 
+//     {
+  // var update = {'$push': {animal_ids: animal._id}};
+//         if (err) throw err;
+//         res.status(201).json({message:'New animal created.'});
+//     });
+//   } catch (err) {
+//     Errormsg(err,res);
+//   }
+// });
+
+
+  // *** ALTERNATIVE TO POPULATE ANIMAL ***
+  // try {
+  //   var lookups = { from: 'types', localField: '_id', foreignField: 'animal_ids', as: 'type' };
+  //   var matches = {'_id':{$in:[mongoose.Types.ObjectId(req.params.id)]}};
+  //   var animalAggr = Animal.aggregate([{$lookup:lookups},{$match:matches}]);
+  //   animalAggr.exec(function (err, animal) 
+  //   {
+  //       if (err) throw err;
+  //       var json = JSON.stringify(animal, ['_id', 'name', 'description', 'environment', 'created_at', 'updated_at', 'type_id', 'type'], 4);
+  //       var orderedJson = JSON.parse(json);
+  //       res.status(200).json(orderedJson);
+  //   });
+  // } catch (err) {
+  //   res.status(400).json({message:'An error has occured in getting data.'});
+  // }
+
+
+  // **** ALTERNATE TO UPDATE ANIMAL ****//
+   // Animal.findOneAndUpdate({_id:req.params.id}, update, updateValidation).exec(function(err, result)
+      // {
+      //   try {
+      //     if (err) throw err;
+      //     Type.findOneAndUpdate({animal_ids:req.params.id}, pull).exec(function(err, result)
+      //     {
+      //         if (err) throw err;
+      //         Type.findOneAndUpdate({_id:update.type_id},push,).exec(function(err, result)
+      //         {
+      //           if (err) throw err;
+      //           res.redirect(301,req.originalUrl);
+      //         });
+      //     });
+      //   } catch (err) {
+      //     Errormsg(err,res);
+      //   }        
+      // });

@@ -1,0 +1,107 @@
+// ALTERNATE TO DELETE ANIMAL
+  // try {
+  //   await Type.updateOne({animal_ids:req.params.id}, {'$pull': {animal_ids: req.params.id}}, updateValidation);
+  //   var delAnimal = await Animal.deleteOne({_id:req.params.id});
+  //   if (delAnimal.deletedCount != 1) throw new Error('Error deleting data.');
+  //   res.status(200).json({'message': 'Animal deleted.'});
+  // } catch (error) {
+  //   res.status(400).json([error.message])
+  // }
+
+// ALTERNATE TO CREATE ANIMAL
+  // try {
+  //   var animal = new Animal 
+  //   ({
+  //     name: req.body.name,
+  //     description: req.body.description, 
+  //     type_id: req.body.type_id,
+  //   });
+  //   var updateType = await Type.updateOne({_id: animal.type_id},{'$push': {animal_ids: animal._id}},updateValidation);
+  //   if (updateType.nModified == 0) throw new Error("Error adding type id.");
+  //   await animal.save();
+  //   res.status(200).json({"message": "Animal created"});
+  // } catch (error) {
+  //   Errormsg(error, res);
+  // }
+
+  // ALTERNATE TO UPDATE 
+  // try {
+  //   var update = {
+  //     name: req.body.name,
+  //     description: req.body.description, 
+  //     type_id: req.body.type_id,
+  //     updated_at: Date.now(),
+  //   };
+  //   var pull = {'$pull': {animal_ids:req.params.id}};
+  //   var push = {'$push': {animal_ids:req.params.id}};
+  //   var updatedAnimal = await Animal.updateOne({_id:req.params.id}, update, updateValidation);
+  //   if (updatedAnimal.nModified == 0) throw new Error("Wrong id");
+  //   await Type.updateOne({animal_ids: req.params.id}, pull);
+  //   await Type.updateOne({_id: update.type_id}, push);
+  //   res.redirect(301, req.originalUrl);
+  // } catch (error) {
+  //   Errormsg(error, res);
+  // } 
+
+      var animal = await Animal.findOne({_id : req.params.id});
+    var type = await Type.findOne({animal_ids: req.params.id});
+    var newType = await Type.findOne({_id: req.body.type_id});
+    if ( animal==null ) throw new Error("Wrong animal id");
+    if ( newType==null ) throw new Error("Wrong newType id");
+    animal.name = req.body.name;
+    animal.description = req.body.description;
+    animal.type_id = req.body.type_id;
+    animal.updated_at = Date.now();
+    if ( type==null ) {
+      newType.animal_ids.push(req.params.id);
+      await newType.save({validateBeforeSave:false});
+      await animal.save();
+    } else {
+      type.animal_ids.pull(req.params.id);
+      newType.animal_ids.push(req.params.id);
+      await type.save({validateBeforeSave:false});
+      await newType.save({validateBeforeSave:false});
+      await animal.save();
+    }  
+  
+      // var animal = await Animal.findOne({_id: req.params.id});
+    // animal.name = req.body.name;
+    // animal.description = req.body.description;
+    // animal.type_id = req.body.type_id;
+    // animal.updated_at = Date.now();
+    // animal.save();
+
+    // var pullType = await Type.findOne({animal_ids: animal._id});
+    // if ( pullType != null ) {
+    //   pullType.animal_ids.pull(animal._id);
+    //   pullType.save({validateBeforeSave: false});
+    // }
+
+    // var pushType = await Type.findOne({_id: animal.type_id});
+    // if (pushType == null ) throw new Error('Cannot find type.');
+    // pushType.animal_ids.push(animal._id);
+    // pushType.save({validateBeforeSave: false});
+
+        // var animal = await Animal.findOne({_id: req.params.id});
+    // if ( animal === null) throw new Error('Cannot find Animal.');
+    // animal.name = req.body.name;
+    // animal.description = req.body.description;
+    // animal.type_id = req.body.type_id;
+    // animal.updated_at = Date.now();
+    // var pullType = await Type.findOne({animal_ids: req.params.id});
+    // if ( pullType === null ) {
+    //   var pushType = await Type.findOne({_id: req.body.type_id});
+    //   if ( pushType === null ) throw new Error('Cannot find Type'); 
+    //   if ( pushType.animal_ids.includes(req.params.id) === true ) throw new Error('Duplicate entry');
+    //   pushType.animal_ids.push(req.params.id);
+    //   await animal.save();
+    //   await pushType.save({validateBeforeSave: false});
+    // } else {
+    //   pullType.animal_ids.pull(req.params.id);
+    //   var pushType = await Type.findOne({_id: req.body.type_id});
+    //   if ( pushType === null ) throw new Error('Cannot find Type'); 
+    //   pushType.animal_ids.push(req.params.id);
+    //   await animal.save();
+    //   await pullType.save({validateBeforeSave: false});
+    //   await pushType.save({validateBeforeSave: false});
+    // }
