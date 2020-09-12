@@ -7,7 +7,7 @@ describe('Login user', function(){
         agent
         .post('/api/user/login')
         .send({username:'username', password:'Password1234'})
-        .expect(400)
+        .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
     
@@ -17,27 +17,27 @@ describe('Login user', function(){
         .expect({"message":"You are now logged out."}, done);
     });
 
-    // it('Login validation (wrong account)', function(done){
-    //     agent
-    //     .post('/api/user/login')
-    //     .send({username:'usernamee', password:'password1234'})
-    //     .expect(400)
-    //     .expect(['Wrong credentials.'], done);
-    // });
+    it('Login validation (wrong account)', function(done){
+        agent
+        .post('/api/user/login')
+        .send({username:'usernamee', password:'password1234'})
+        .expect(400)
+        .expect(['Wrong credentials.'], done);
+    });
 
-    // it('Login validation (empty string)', function(done){
-    //     agent
-    //     .post('/api/user/login')
-    //     .send({username:'', password:''})
-    //     .expect(400)
-    //     .expect(['Wrong credentials.'], done);
-    // });
+    it('Login validation (empty string)', function(done){
+        agent
+        .post('/api/user/login')
+        .send({username:'', password:''})
+        .expect(400)
+        .expect(['Wrong credentials.'], done);
+    });
 
-    // it('Login validation (null)', function(done){
-    //     agent
-    //     .post('/api/user/login')
-    //     .send({username:null, password:null})
-    //     .expect(400)
-    //     .expect(['Wrong credentials.'], done);
-    // });
+    it('Login validation (null)', function(done){
+        agent
+        .post('/api/user/login')
+        .send({username:null, password:null})
+        .expect(400)
+        .expect(['Wrong credentials.'], done);
+    });
 });

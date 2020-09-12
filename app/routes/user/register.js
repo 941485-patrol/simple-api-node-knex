@@ -1,14 +1,16 @@
-const User = require('../../models/user');
+const RegisterForm = require('../../validators/registerSchema');
 var Errormsg = require('../../errmsg');
-
+const knex = require('../../../knex/knex.js');
+const setUserService = require('../../services/user/setUser');
 const register = async function(req, res, next){
     try {
-        if (req.body.password != req.body.confirm) throw new Error('Passwords must match.');
-        var user = new User({
-            username: req.body.username,
-            password: req.body.password,
-        });
-        await user.save();
+        var user = await RegisterForm
+            .validateAsync({
+                username: req.body.username, 
+                password: req.body.password, 
+                repeat_password: req.body.repeat_password
+            });
+        await setUserService(user);
         res.status(200).json({"message": "User registered."});
     } catch (error) {
         Errormsg(error, res);
