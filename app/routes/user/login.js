@@ -7,13 +7,14 @@ const login = async function(req, res, next){
     try {
         var user = await getUserService(req);
         var validUser = await validateUser(req, user);
-        var token = await updateUserToken(req, validUser[0]);
+        var token = await updateUserToken(req, validUser);
+        console.log(token);
         res.cookie('session', token[0].token, {
             signed:true,
             sameSite:'none',
             httpOnly:true,
             maxAge:180000, // 3 minutes
-        }); 
+        });
         res.status(200).json({"message": "You are now logged in."});
     } catch (error) {
         Errormsg(error, res);

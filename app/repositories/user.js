@@ -5,7 +5,7 @@ class User {
     }
 
     getUser(){
-        return knex('users').select('*').where('username', '=', this.req.body.username);
+        return knex('users').select('*').where('username', '=', this.req.body.username).first();
     }
 
     setUser(hash, token){
