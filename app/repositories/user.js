@@ -4,12 +4,12 @@ class User {
         this.req = req;
     }
 
-    getUser(){
-        return knex('users').select('*').where('username', '=', this.req.body.username).first();
+    getUser(username){
+        return knex('users').select('*').where('username', '=', username).first();
     }
 
-    setUser(hash, token){
-        return knex('users').insert({username: this.req.username, password: hash},['id']);
+    setUser(username ,hash){
+        return knex('users').insert({username: username, password: hash},['id']);
     }
 
     updateUserToken(userId, accessToken) {

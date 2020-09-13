@@ -11,29 +11,30 @@ describe('Register user', function(){
         .expect({"message": "User registered."}, done);
     });
 
-    // it ('Double entry', function(done){
-    //     agent
-    //     .post('/api/user/register')
-    //     .send({username:'username2', password:'Password1234', confirm:'Password1234'})
-    //     .expect(400)
-    //     .expect(['Username already exists.'], done);
-    // });
+    it ('Double entry', function(done){
+        agent
+        .post('/api/user/register')
+        .send({username:'username2', password:'Password123', repeat_password:'Password123'})
+        .expect(400)
+        .expect(['Already exists. (username)'], done);
+    });
 
     // it ('Empty fields validation', function(done){
     //     agent
     //     .post('/api/user/register')
-    //     .send({username:'', password:'', confirm:''})
+    //     .send({username:'', password:'', repeat_password:''})
     //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('Username is required.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Password is required.')===false) throw new Error('Test case has failed.');
-    //     }).end(done);
+    //     .expect([], done);
+    //     // .expect(function(res){
+    //     //     if (res.body.includes('Username is required.')===false) throw new Error('Test case has failed.');
+    //     //     if (res.body.includes('Password is required.')===false) throw new Error('Test case has failed.');
+    //     // }).end(done);
     // });
 
     // it ('Incomplete fields validation', function(done){
     //     agent
     //     .post('/api/user/register')
-    //     .send({username:'usernm', password:'Pas123', confirm:'Pas123'})
+    //     .send({username:'usernm', password:'Pas123', repeat_password:'Pas123'})
     //     .expect(400)
     //     .expect(function(res){
     //         if (res.body.includes('Username must be more than 8 characters')===false) throw new Error('Test case has failed.');
@@ -44,7 +45,7 @@ describe('Register user', function(){
     // it ('Password validation', function(done){
     //     agent
     //     .post('/api/user/register')
-    //     .send({username:'username3', password:'password123', confirm:'password123'})
+    //     .send({username:'username3', password:'password123', repeat_password:'password123'})
     //     .expect(400)
     //     .expect(['Password must have a captial letter and a number.'], done);
     // });
@@ -52,7 +53,7 @@ describe('Register user', function(){
     // it ('Password validation 2', function(done){
     //     agent
     //     .post('/api/user/register')
-    //     .send({username:'username3', password:'passwordstrong', confirm:'passwordstrong'})
+    //     .send({username:'username3', password:'passwordstrong', repeat_password:'passwordstrong'})
     //     .expect(400)
     //     .expect(['Password must have a captial letter and a number.'], done);
     // });

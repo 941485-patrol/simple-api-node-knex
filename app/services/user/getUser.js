@@ -1,6 +1,6 @@
 const UserRepo = require('../../repositories/user');
-const getUser = function(req){
-    var user = new UserRepo(req);
-    return user.getUser();
+const getUser = function(username){
+    var user = new UserRepo();
+    return user.getUser(username);
 }
 module.exports = getUser;

@@ -1,12 +1,14 @@
-const userNameExists = async function(value, args) {
-    var User = require('../models/user');
-    if (this.__v != undefined) {
-        var typeCount = await User.findOne({_id:{'$ne': this._id}, user: new RegExp(`^${value}$`,'i')});
-        if (typeCount != null) return false;
-    } else {
-        var typeCount = await User.findOne({username: new RegExp(`^${value}$`,'i')});
-        if (typeCount != null) return false;
+const getUserService = require('../services/user/getUser');
+const userNameExists = async function(value) {
+    try {
+        var user = await getUserService(value);
+        if (user != null) {
+           throw new Error('Already exists.');
+        } else {
+            return undefined;
+        }
+    } catch (error) {
+        throw error;
     }
-
 };
 module.exports = userNameExists;

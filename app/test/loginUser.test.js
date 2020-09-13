@@ -17,10 +17,18 @@ describe('Login user', function(){
         .expect({"message":"You are now logged out."}, done);
     });
 
-    it('Login validation (wrong account)', function(done){
+    it('Login validation (wrong username account)', function(done){
         agent
         .post('/api/user/login')
         .send({username:'usernamee', password:'password1234'})
+        .expect(400)
+        .expect(['Wrong credentials.'], done);
+    });
+
+    it('Login validation (wrong password account)', function(done){
+        agent
+        .post('/api/user/login')
+        .send({username:'username', password:'1234password'})
         .expect(400)
         .expect(['Wrong credentials.'], done);
     });

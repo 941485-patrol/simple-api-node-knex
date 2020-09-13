@@ -1,11 +1,10 @@
 const bcrypt = require("bcryptjs"); 
-const validateUser = function(req, user){
-    if (user == null) throw new Error('Wrong credentials.');
-    var validUser = bcrypt.compareSync(req.body.password, user.password);
+const validateUser = function( formPassword, dbPassword){
+    var validUser = bcrypt.compareSync(formPassword, dbPassword);
     if (validUser == false) {
         throw new Error('Wrong credentials.');
     } else {
-        return user;
+        return true;
     }
 }
 module.exports = validateUser;
