@@ -1,4 +1,4 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
 const agent = request.agent(app);
 
@@ -6,7 +6,7 @@ describe('Get Animals', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -49,7 +49,7 @@ describe('Get Animals', function(){
         .get(`/api/animal/?page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -94,7 +94,7 @@ describe('Get Animals', function(){
         .get(`/api/animal/?sort=-description&page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
     
@@ -134,16 +134,16 @@ describe('Get Animals', function(){
         }).end(done);
     });
 
-    // it('No data message if there is no animals inserted', function(done){
-    //     await Animal.deleteMany();
-    //     agent
-    //     .get(`/api/animal`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         
-    //         if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
-    //     })
-    // });
+    // // it('No data message if there is no animals inserted', function(done){
+    // //     await Animal.deleteMany();
+    // //     agent
+    // //     .get(`/api/animal`)
+    // //     .expect(200)
+    // //     .expect(function(res){
+    // //         
+    // //         if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+    // //     })
+    // // });
 
     it('Error if page query is not numeric', function(done){
         agent
@@ -191,41 +191,35 @@ describe('Get Animals', function(){
         agent
         .get(`/api/animal/?sort=namek&page=2`)
         .expect(400)
-        .expect(function(res){
-            if (res.body.includes('Invalid sort field.')==false) throw new Error ('Must have sorting error msg');
-        }).end(done);
+        .expect(['Invalid sort field.'], done);
     });
 
     it('SortPage error (wrong page and sort key)', function(done){
         agent
         .get(`/api/animal/?sort=-descriptore&page=negativeOne`)
         .expect(400)
-        .expect(function(res){
-            if (res.body.includes('Page must be a number.')==false) throw new Error ('Must have paging error msg');
-        }).end(done);
+        .expect(['Page must be a number.'], done); // only page error will be displayed.
     });
 
     it('SortPage error (wrong sortkey and page zero)', function(done){
         agent
         .get(`/api/animal/?page=0&sort=__id`)
         .expect(400)
-        .expect(function(res){
-            if (res.body.includes('Page must be not less than 1.')==false) throw new Error ('Must have paging error msg');
-        }).end(done);
+        .expect(['Page must be not less than 1.'], done); // only page error will be displayed.
     });
 
     it('SearchSortPage error (wrong sortkey)', function(done){
         agent
         .get('/api/animal/?sort=namek&page=2&s=AniMaL')
         .expect(400)
-        .expect(['Invalid sort field.'], done);
+        .expect(['Invalid sort field.'], done); // only sort error will be displayed.
     });
 
     it('SearchSortPage error (searchkey not found)', function(done){
         agent
         .get('/api/animal/?sort=-name&page=3&s=bAnimAL')
         .expect(200)
-        .expect({"results": {"message": 'No data.'}}, done);
+        .expect({"message": 'No data.'}, done);
     });
 
     it('SearchSortPage error (wrong page)', function(done){

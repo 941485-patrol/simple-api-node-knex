@@ -5,6 +5,7 @@ const sortAnimals = function(req) {
     if (sortFields.includes(sort) == false) throw new Error('Invalid sort field.');
     if (sort.includes('-') == true) order = 'desc';
     if (sort == 'id' || sort == '-id') {sort = 'animals.id';}
+    if (sort == 'name' || sort == '-name') {sort = 'animals.name';}
     if (sort == 'description' || sort == '-description') {sort = 'animals.description';}
     if (sort == 'created' || sort == '-created') {sort = 'animals.created_at';}
     if (sort == 'updated' || sort == '-updated') {sort = 'animals.updated_at';}

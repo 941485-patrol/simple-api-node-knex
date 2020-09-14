@@ -22,7 +22,7 @@ describe('Login user', function(){
         .post('/api/user/login')
         .send({username:'usernamee', password:'password1234'})
         .expect(400)
-        .expect(['Wrong credentials'], done);
+        .expect(['Wrong credentials.'], done);
     });
 
     it('Login validation (wrong password account)', function(done){
@@ -30,7 +30,7 @@ describe('Login user', function(){
         .post('/api/user/login')
         .send({username:'username', password:'1234password'})
         .expect(400)
-        .expect(['Wrong credentials'], done);
+        .expect(['Wrong credentials.'], done);
     });
 
     it('Login validation (empty string)', function(done){
@@ -38,7 +38,7 @@ describe('Login user', function(){
         .post('/api/user/login')
         .send({username:'', password:''})
         .expect(400)
-        .expect(['Wrong credentials'], done);
+        .expect(['Wrong credentials.'], done);
     });
 
     it('Login validation (null)', function(done){
@@ -46,6 +46,6 @@ describe('Login user', function(){
         .post('/api/user/login')
         .send({username:null, password:null})
         .expect(400)
-        .expect(['Wrong credentials'], done);
+        .expect(['Wrong credentials.'], done);
     });
 });

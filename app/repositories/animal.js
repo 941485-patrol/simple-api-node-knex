@@ -6,7 +6,7 @@ class Animal {
 
     getAllAnimals(searchee, perPage, page, pageSkip, sort){
         return knex('animals')
-        .select('animals.*', 'status.name AS statName', 'status.description AS statDesc', 'types.name AS typeName', 'types.environment AS typeEnv')
+        .select(knex.raw('animals.*, COUNT(animals.id) over(), status.name AS statName, status.description AS statDesc, types.name AS typeName, types.environment AS typeEnv'))
         .leftJoin('status', 'animals.status_id', 'status.id')
         .leftJoin('types', 'animals.type_id', 'types.id')
         .where(searchee)

@@ -4,7 +4,7 @@ const passwordValidate = function(value, helpers){
     if (hasDigits == true && hasCaps == true) {
         return value
     } else {
-        return helpers.message('Password must have a capital letter and a number.')
+        return helpers.message('Password must have a capital letter and a number')
     }
 };
 module.exports = passwordValidate;
