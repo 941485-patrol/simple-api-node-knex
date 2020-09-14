@@ -1,9 +1,11 @@
 const RegisterForm = require('../../validators/registerSchema');
 var Errormsg = require('../../errmsg');
-const knex = require('../../../knex/knex.js');
 const setUserService = require('../../services/user/setUser');
+const getUserService = require('../../services/user/getUser');
 const register = async function(req, res, next){
     try {
+        var userExists = await getUserService(req.body.username);
+        if (userExists != null) throw new Error('Username already exists');
         var user = await RegisterForm
             .validateAsync({
                 username: req.body.username, 

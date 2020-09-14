@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const login = async function(req, res, next){
     try {
         var user = await getUserService(req.body.username);
-        if (user == null) throw new Error('Wrong credentials.');
+        if (user == null) throw new Error('Wrong credentials');
         var validUser = validateUser(req.body.password, user.password);
         if (validUser == true) {
             var token = await updateUserToken(user.id);

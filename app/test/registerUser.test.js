@@ -16,20 +16,19 @@ describe('Register user', function(){
         .post('/api/user/register')
         .send({username:'username2', password:'Password123', repeat_password:'Password123'})
         .expect(400)
-        .expect(['Already exists. (username)'], done);
+        .expect(['Username already exists'], done);
     });
 
-    // it ('Empty fields validation', function(done){
-    //     agent
-    //     .post('/api/user/register')
-    //     .send({username:'', password:'', repeat_password:''})
-    //     .expect(400)
-    //     .expect([], done);
-    //     // .expect(function(res){
-    //     //     if (res.body.includes('Username is required.')===false) throw new Error('Test case has failed.');
-    //     //     if (res.body.includes('Password is required.')===false) throw new Error('Test case has failed.');
-    //     // }).end(done);
-    // });
+    it ('Empty fields validation', function(done){
+        agent
+        .post('/api/user/register')
+        .send({username:'', password:'', repeat_password:''})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Username is required')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Password is required')===false) throw new Error('Test case has failed.');
+        }).end(done);
+    });
 
     // it ('Incomplete fields validation', function(done){
     //     agent
