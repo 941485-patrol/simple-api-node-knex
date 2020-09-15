@@ -1,7 +1,7 @@
 var Errormsg = require('../../errmsg');
 const getUserService = require('../../services/user/getUser');
 const updateUserToken = require('../../services/user/updateUserToken');
-const validateUser = require('../../validators/validateUser');
+const validateUser = require('../../services/user/validateUser');
 const bcrypt = require('bcryptjs');
 
 const login = async function(req, res, next){

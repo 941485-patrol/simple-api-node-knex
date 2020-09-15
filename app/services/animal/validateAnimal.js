@@ -1,4 +1,4 @@
-const AnimalForm = require('../../validators/animalSchema');
+const AnimalForm = require('./animalSchema');
 const validateAnimal = function(req) {
     return AnimalForm.validateAsync({
         name: req.body.name,

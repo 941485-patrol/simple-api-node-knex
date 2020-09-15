@@ -49,15 +49,18 @@ describe('Create Animal', function(){
         
     });
 
-    it('Error if status id does not exist', function(done){
+    it('ID does not exist (all)', function(done){
         agent
         .post('/api/animal')
-        .send({name:'myname', description:'mydescription', type_id:2, status_id:44})
+        .send({name:'myname', description:'mydescription', type_id:'45', status_id:44})
         .expect(400)
-        .expect(['Status ID does not exist.'], done);
+        .expect(function(res){
+            if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
+        }).end(done);
     });
 
-    it('Error if type id does not exist', function(done){
+    it('ID does not exist (type id only)', function(done){
         agent
         .post('/api/animal')
         .send({name:'myname', description:'mydescription', type_id:'55', status_id:'2'})
@@ -120,18 +123,27 @@ describe('Create Animal', function(){
         }).end(done);
     });
 
-    it('Avoid duplicate entry', async function(){
+    it('Avoid duplicate entry (both)', async function(){
         var type = await knex('types').select('*').where('id',2).first();
         var status = await knex('status').select('*').where('id',1).first();
         await agent
         .post('/api/animal')
         .send({name:'animal1', description:'description8', type_id: type.id, status_id: status.id})
         .expect(400)
-        .expect([])
         .expect(function(res){
             if (res.body.includes('Name already exists.')==false) throw new Error('Test case failed.');
             if (res.body.includes('Description already exists.')==false) throw new Error('Test case failed.');
         });
+    });
+
+    it('Avoid duplicate entry (description only)', async function(){
+        var type = await knex('types').select('*').where('id',2).first();
+        var status = await knex('status').select('*').where('id',1).first();
+        await agent
+        .post('/api/animal')
+        .send({name:'banimal1', description:'description8', type_id: type.id, status_id: status.id})
+        .expect(400)
+        .expect(['Description already exists.']);
     });
 
     it('Refresh database', async function(){

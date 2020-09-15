@@ -1,4 +1,4 @@
-const RegisterForm = require('../../validators/registerSchema');
+const RegisterForm = require('../../services/user/registerSchema');
 var Errormsg = require('../../errmsg');
 const setUserService = require('../../services/user/setUser');
 const getUserService = require('../../services/user/getUser');
