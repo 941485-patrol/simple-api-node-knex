@@ -13,5 +13,9 @@ class Animal {
         .limit(perPage).offset(pageSkip*perPage)
         .orderBy(sort[0], sort[1]);
     }
+
+    createAnimal(name, description, status_id, type_id){
+        return knex('animals').insert({name: name, description: description, status_id: status_id, type_id: type_id});
+    }
 }
 module.exports = Animal;

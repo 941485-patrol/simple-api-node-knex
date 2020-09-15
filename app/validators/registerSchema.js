@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const passwordValidate = require('./passwordValidate');
-const userNameExists = require('./userNameExists');
 const registerSchema = Joi.object({
     username: Joi.string()
         .required()

@@ -12,7 +12,7 @@ const register = async function(req, res, next){
                 password: req.body.password, 
                 repeat_password: req.body.repeat_password
             }, options={abortEarly: false});
-        await setUserService(user.username);
+        await setUserService(user.username, user.password);
         res.status(200).json({"message": "User registered."});
     } catch (error) {
         Errormsg(error, res);
