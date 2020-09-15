@@ -14,6 +14,12 @@ class Animal {
         .orderBy(sort[0], sort[1]);
     }
 
+    checkAnimal(searchee){
+        return knex('animals')
+        .select('animals.name', 'animals.description')
+        .where(searchee).first();
+    }
+
     createAnimal(name, description, status_id, type_id){
         return knex('animals').insert({name: name, description: description, status_id: status_id, type_id: type_id});
     }

@@ -19,6 +19,14 @@ describe('Register user', function(){
         .expect(['Username already exists.'], done);
     });
 
+    it ('Double entry case insensitive', function(done){
+        agent
+        .post('/api/user/register')
+        .send({username:'UserName2', password:'Password123', repeat_password:'Password123'})
+        .expect(400)
+        .expect(['Username already exists.'], done);
+    });
+
     it ('Empty fields validation', function(done){
         agent
         .post('/api/user/register')

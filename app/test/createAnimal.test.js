@@ -65,89 +65,74 @@ describe('Create Animal', function(){
         .expect(['Type ID does not exist.'], done);
     });
 
-    it('Error if type_id is null', function(done){
+    it('Error if type_id / status_id is null', function(done){
         agent
         .post('/api/animal')
-        .send({name:'myname', description:'mydescription', type_id:null, status_id:'2'})
+        .send({name:'myname', description:'mydescription', type_id:null, status_id:null})
         .expect(400)
-        .expect(['Type ID does not exist.'], done);
+        .expect(function(res){
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+        }).end(done);
     });
     
-    it('Error if status_id is null', function(done){
+    it('Error if type_id / status_id is empty string', function(done){
         agent
         .post('/api/animal')
-        .send({name:'myname', description:'mydescription', type_id:'12', status_id:null})
+        .send({name:'myname', description:'mydescription', type_id:'', status_id:''})
         .expect(400)
-        .expect(['Status ID does not exist.'], done);
+        .expect(function(res){
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+        }).end(done);
     });
 
-    // it('Error if type_id is empty string', function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:'myname', description:'mydescription', type_id:'', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(["Invalid Type ID."], done);
-    // });
+    it('Error if type_id / status_id is invalid', function(done){
+        agent
+        .post('/api/animal')
+        .send({name:'myname', description:'mydescription', type_id:'1.50' , status_id:'someLetter'})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+        }).end(done);
+    });
 
-    // it('Error if status_id is empty string', function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:'myname', description:'mydescription', type_id:'0123456789ab', status_id:''})
-    //     .expect(400)
-    //     .expect(["Invalid Status ID."], done);
-    // });
+    it('Incomplete fields validation', function(done){
+        agent
+        .post('/api/animal')
+        .send({name:'m', description:'abcd', type_id:'2', status_id:'5'})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is too short.')===false) throw new Error('Test case has failed.');
+        }).end(done);
+    });
 
-    // it('Error if type_id is invalid', function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:'myname', description:'mydescription', type_id:'invalid_mongoose_object_id' , status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(["Invalid Type ID."], done);
-    // });
+    it('Empty fields validation',  function(done){
+        agent
+        .post('/api/animal')
+        .send({name:null, description:'', type_id:'3', status_id:'5'})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case has failed.');
+        }).end(done);
+    });
 
-    // it('Error if status_id is invalid', function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:'myname', description:'mydescription', type_id:'0123456789ab' , status_id:'invalid_mongoose_object_id'})
-    //     .expect(400)
-    //     .expect(["Invalid Status ID."], done);
-    // });
-
-    // it('Error if min/max length is not inputted', function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:'m', description:'abcd', type_id:'0123456789ab', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('No animal has one letter...')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Description is too short...')===false) throw new Error('Test case has failed.');
-    //     })
-    //     .end(done);
-    // });
-
-    // it('Error if null or empty string input on text fields',  function(done){
-    //     agent
-    //     .post('/api/animal')
-    //     .send({name:null, description:'', type_id:'0123456789ab', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('Animal name is required.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Animal description is required.')===false) throw new Error('Test case has failed.');
-    //     }).end(done);
-    // });
-
-    // it('Avoid duplicate entry', async function(){
-    //     var type = await Type.findOne({name:'type5'});
-    //     var status = await Status.findOne({name:'status5'});
-    //     await agent
-    //     .post('/api/animal')
-    //     .send({name:'myname', description:'mydescription', type_id: type._id, status_id: status._id})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('Animal name already exists.')==false) throw new Error('Test case failed.');
-    //         if (res.body.includes('Animal description already exists.')==false) throw new Error('Test case failed.');
-    //     });
-    // });
+    it('Avoid duplicate entry', async function(){
+        var type = await knex('types').select('*').where('id',2).first();
+        var status = await knex('status').select('*').where('id',1).first();
+        await agent
+        .post('/api/animal')
+        .send({name:'animal1', description:'description8', type_id: type.id, status_id: status.id})
+        .expect(400)
+        .expect([])
+        .expect(function(res){
+            if (res.body.includes('Name already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Description already exists.')==false) throw new Error('Test case failed.');
+        });
+    });
 
     it('Refresh database', async function(){
         // var newAnimal = await knex('animals').select('*').where('name', 'animal99').first();

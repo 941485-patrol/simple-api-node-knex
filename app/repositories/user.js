@@ -4,8 +4,12 @@ class User {
         this.req = req;
     }
 
-    getUser(username){
-        return knex('users').select('*').where('username', '=', username).first();
+    getUser(ilike=false, username){
+        if (ilike=true) {
+            return knex('users').select('*').where('username', 'ilike', username).first();
+        } else {
+            return knex('users').select('*').where('username', '=', username).first();
+        }
     }
 
     setUser(username ,hash){

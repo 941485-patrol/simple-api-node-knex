@@ -4,7 +4,7 @@ const setUserService = require('../../services/user/setUser');
 const getUserService = require('../../services/user/getUser');
 const register = async function(req, res, next){
     try {
-        var userExists = await getUserService(req.body.username);
+        var userExists = await getUserService(ilike=true, req.body.username);
         if (userExists != null) throw new Error('Username already exists');
         var user = await RegisterForm
             .validateAsync({
