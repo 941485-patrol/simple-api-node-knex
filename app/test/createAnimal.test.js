@@ -3,34 +3,6 @@ const request = require('supertest');
 const knex = require('../../knex/knex');
 const agent = request.agent(app);
 
-// describe('Create Animal', function(done){
-//     it('Login first', function(done){
-//         agent
-//         .post('/api/user/login')
-//         .send({username:'username', password:'Password123'})
-//         .expect(200)
-//         .expect({"message": "You are now logged in."}, done);
-//     });
-
-//     it('Testing', function(done){
-//         agent
-//         .get('/api/animal')
-//         .expect(200, done);
-//     });
-
-//     it('Logout then', function(done){
-//         agent
-//         .get('/api/user/logout')
-//         .expect({"message":"You are now logged out."}, done);
-//     });
-
-//     it('Testing againn', function(done){
-//         agent
-//         .get('/api/animal')
-//         .expect(401, done);
-//     });
-// })
-
 describe('Create Animal', function(){
     it('Login first', function(done){
         agent
@@ -46,7 +18,6 @@ describe('Create Animal', function(){
         .post('/api/animal')
         .send({name:'animal99', description: 'description99', type_id: type.id, status_id: status.id})
         .expect({"message": "Animal created"});
-        
     });
 
     it('ID does not exist (all)', function(done){
@@ -147,12 +118,11 @@ describe('Create Animal', function(){
     });
 
     it('Refresh database', async function(){
-        // var newAnimal = await knex('animals').select('*').where('name', 'animal99').first();
-        // await agent
-        // .delete(`/api/animal/${newAnimal._id}`)
-        // .expect(200)
-        // .expect({'message': 'Animal deleted.'});
-        await knex('animals').where('name','animal99').del();
+        var newAnimal = await knex('animals').select('*').where('name', 'animal99').first();
+        await agent
+        .delete(`/api/animal/${newAnimal.id}`)
+        .expect(200)
+        .expect({'message': 'Animal deleted.'});
     });
 
     it('Logout then', function(done){

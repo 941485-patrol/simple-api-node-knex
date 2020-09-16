@@ -1,8 +1,6 @@
 
 exports.up = function(knex) {
-    return knex.schema.table('types', function(table) {
-        table.specificType('animal_ids', 'integer[]');
-    });
+    return knex.schema.raw("ALTER TABLE types ADD COLUMN animal_ids integer[] DEFAULT '{}' ");
 };
 
 exports.down = function(knex) {

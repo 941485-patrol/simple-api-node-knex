@@ -1,3 +1,4 @@
+const { returning } = require('../../knex/knex.js');
 const knex = require('../../knex/knex.js');
 class Animal {
     constructor(req=null){
@@ -26,6 +27,10 @@ class Animal {
         return knex('animals').returning('id').insert({name: name, description: description, status_id: status_id, type_id: type_id});
     }
 
+    deleteAnimal(id){
+        return knex('animals').where({'animals.id': id}).del();
+    }
+
     checkAnimalName(searchee){
         return knex('animals').select('animals.name').where(searchee).first();
     }
@@ -40,6 +45,14 @@ class Animal {
 
     pushIdtoType(id, type_id){
         return knex('types').returning('id').where('id', type_id).update({animal_ids: knex.raw('array_append(animal_ids,?)',[id])});
+    }
+
+    pullIdsfromStatus(id) {
+        return knex('status').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id])});
+    }
+
+    pullIdsfromTypes(id) {
+        return knex('types').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id])});
     }
 }
 module.exports = Animal;
