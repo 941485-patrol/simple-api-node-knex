@@ -6,7 +6,7 @@ var upload = multer();
 var getAnimals = require('./animal/getAnimals');
 var createAnimal = require('./animal/createAnimal');
 var getAnimal = require('./animal/getAnimal');
-// var updateAnimal = require('./animal/updateAnimal');
+var updateAnimal = require('./animal/updateAnimal');
 var deleteAnimal = require('./animal/deleteAnimal');
 
 router.route('/')
@@ -15,7 +15,7 @@ router.route('/')
 
 router.route('/:id')
   .get(getAnimal)
-  // .put(upload.none(), updateAnimal)
+  .put(upload.none(), updateAnimal)
   .delete(upload.none(), deleteAnimal)
 
 module.exports = router;

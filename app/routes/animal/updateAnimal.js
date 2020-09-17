@@ -1,35 +1,50 @@
-const Animal = require('../../models/animal');
-const Type = require('../../models/type');
-const Status = require('../../models/status');
 const Errormsg = require('../../errmsg');
-const mongoose = require('mongoose');
+const validateUrl = require('../../services/animal/validateUrl');
+const validateAnimalService = require('../../services/animal/validateAnimal');
+const getOneAnimal = require('../../services/animal/getOneAnimal');
+const getTypeService = require('../../services/type/getType');
+const getStatusService = require('../../services/status/getStatus');
+const checkAnimalName = require('../../services/animal/checkAnimalName');
+const checkAnimalDesc = require('../../services/animal/checkAnimalDesc');
+const updateAnimalService = require('../../services/animal/updateAnimal');
+const pullStatus = require('../../services/animal/pullStatus');
+const pullType = require('../../services/animal/pullType');
+const pushStatus = require('../../services/animal/pushIdtoStatus');
+const pushType = require('../../services/animal/pushIdtoType');
 const updateAnimal = async (req, res, next) => {
   try {
-    if( mongoose.isValidObjectId(req.params.id) === false ) throw new Error('Invalid Url.');
-    if( mongoose.isValidObjectId(req.body.type_id) === false ) throw new Error('Invalid Type ID.');
-    if( mongoose.isValidObjectId(req.body.status_id) === false ) throw new Error('Invalid Status ID.');
-    var animal = await Animal.findOne({_id: req.params.id});
-    if ( animal == null ) throw new Error('Cannot find animal');
-    animal.name = req.body.name;
-    animal.description = req.body.description;
-    animal.type_id = req.body.type_id;
-    animal.status_id = req.body.status_id;
-    animal.updated_at = Date.now();
-    var updatedAnimal = await animal.save();
-    var pullType = await Type.findOne({animal_ids: req.params.id});
-    if ( pullType != null ) pullType.animal_ids.pull(req.params.id);
-    var pullStatus = await Status.findOne({animal_ids: req.params.id});
-    if ( pullStatus != null ) pullStatus.animal_ids.pull(req.params.id);
-    var pushType = await Type.findOne({_id: updatedAnimal.type_id});
-    pushType.animal_ids.push(req.params.id);
-    var pushStatus = await Status.findOne({_id: updatedAnimal.status_id});
-    pushStatus.animal_ids.push(req.params.id);
-    if (pullType != null) {
-      await pullType.save({validateBeforeSave: false});
-      await pullStatus.save({validateBeforeSave: false});
+    var idsArr = [];
+    var fieldsArr = [];
+    var validUrl = await validateUrl(req.params.id);
+    var oldAnimal = await getOneAnimal(validUrl.url);
+    if (oldAnimal == null) throw new Error('Cannot find animal.');
+    var newAnimal = await validateAnimalService(req);
+    var status = await getStatusService('id', newAnimal.status_id);
+    if (status == null) idsArr.push('Status ID does not exist.');
+    var type = await getTypeService('id', newAnimal.type_id);
+    if (type == null) idsArr.push('Type ID does not exist.');
+    if (idsArr.length != 0) {
+      var idsStr = idsArr.join(' ');
+      throw new Error(idsStr);
     }
-    await pushType.save({validateBeforeSave: false});
-    await pushStatus.save({validateBeforeSave: false});
+    var nameExists = await checkAnimalName('edit', newAnimal.name, null);
+    if (nameExists != null) fieldsArr.push('Name already exists.');
+    var descExists = await checkAnimalDesc('edit', newAnimal.description, null);
+    if (descExists != null) fieldsArr.push('Description already exists.');
+    if (fieldsArr.length != 0) {
+      var errStr = fieldsArr.join(' ');
+      throw new Error(errStr);
+    }
+    var updated = await updateAnimalService(oldAnimal.id, newAnimal.name, newAnimal.description, newAnimal.status_id, newAnimal.type_id);
+    if (updated.length == 0) throw new Error('Error updating animal.');
+    await pullStatus(oldAnimal.id);
+    // if (oldStatus.length == 0) throw new Error('Error pulling old status.');
+    await pullType(oldAnimal.id);
+    // if (oldType.length == 0) throw new Error('Error pulling old type.');
+    var newStatus = await pushStatus(oldAnimal.id, newAnimal.status_id);
+    if (newStatus.length == 0) throw new Error('Error pushing status.');
+    var newType = await pushType(oldAnimal.id, newAnimal.status_id);
+    if (newType.length == 0) throw new Error('Error pushing type.');
     res.redirect(301, req.originalUrl);
   } catch (error) {
     Errormsg(error, res);
