@@ -145,155 +145,77 @@ describe('Update Animal', function(){
         .expect(['Invalid Url.'], done);
     });
 
-    // it('Existing records on update validation', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:'animal12', description:'description9', type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('Animal name already exists.')==false) throw new Error('Test case failed.');
-    //         if (res.body.includes('Animal description already exists.')==false) throw new Error('Test case failed.');
-    //     })
-    // });
+    it('Existing records on update validation', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:'animal12', description:'description9', type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Description already exists.')==false) throw new Error('Test case failed.');
+        })
+    });
 
-    // it('Error on empty fields', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:'', 
-    //         description:'', 
-    //         type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('Animal name is required.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Animal description is required.')===false) throw new Error('Test case has failed.');
-    //     })
-    // });
-    // it('Error on incomplete fields', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:'n', 
-    //         description:'des', 
-    //         type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
-    //     .expect(400)
-    //     .expect(function(res){
-    //         if (res.body.includes('No animal has one letter...')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Description is too short...')===false) throw new Error('Test case has failed.');
-    //     })
-    // });
+    it('Error on empty fields', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:'', description:'', type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case has failed.');
+        })
+    });
+
+    it('Error on incomplete fields', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:'n', description:'des', type_id:animalToUpd.type_id, status_id: animalToUpd.status_id})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is too short.')===false) throw new Error('Test case has failed.');
+        })
+    });
     
-    // it('Error on empty string type id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(['Invalid Type ID.']);
-    // });
+    it('Error on empty string type/status id', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:animalToUpd.name, description:animalToUpd.description, type_id:'', status_id:''})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+        })
+    });
 
-    // it('Error on invalid type id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'12345', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(['Invalid Type ID.']);
-    // });
+    it('Error on invalid type/status id', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:animalToUpd.name, description:animalToUpd.description, type_id:'12345', status_id:'54321'})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
+        })
+    });
 
-    // it('Error on null type id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:null, status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(function(res){    
-    //         if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
-    //     });
-    // });
-
-    // it('Error on empty string status id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'0123456789ab', status_id:''})
-    //     .expect(400)
-    //     .expect(['Invalid Status ID.']);
-    // });
-
-    // it('Error on invalid status id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'0123456789ab', status_id:'12345'})
-    //     .expect(400)
-    //     .expect(['Invalid Status ID.']);
-    // });
-
-    // it('Error on null status id', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'0123456789ab', status_id:null})
-    //     .expect(400)
-    //     .expect(function(res){    
-    //         if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
-    //     });
-    // });
-
-    // it('Error if both status/type ids do not exist', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'0123456789ab', status_id:'0123456789ab'})
-    //     .expect(400)
-    //     .expect(function(res){    
-    //         if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
-    //     });
-    // });
-
-    // it('Error if both status/type ids are null', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:null, status_id:null})
-    //     .expect(400)
-    //     .expect(function(res){    
-    //         if (res.body.includes('Type ID does not exist.')===false) throw new Error('Test case has failed.');
-    //         if (res.body.includes('Status ID does not exist.')===false) throw new Error('Test case has failed.');
-    //     });
-    // });
-
-    // it('Error if both status/type ids are empty strings', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal11'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:animalToUpd.name, 
-    //         description:animalToUpd.description, 
-    //         type_id:'', status_id:''})
-    //     .expect(400)
-    //     .expect(['Invalid Type ID.']); // only invalid type id validation will be raised
-    // });
+    it('Error on null type id', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send({name:animalToUpd.name, description:animalToUpd.description, type_id:null, status_id:null})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+        })
+    });
 
     it('Logout then', function(done){
         agent

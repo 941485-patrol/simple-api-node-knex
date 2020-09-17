@@ -8,7 +8,7 @@ const getAllAnimals = function(req, perPage){
     var page = pageAnimals(req);
     var pageSkip = parseInt(page) - parseInt(1);
     var sort = sortAnimals(req);
-    var animals = animal.getAllAnimals(searchee, perPage, page, pageSkip, sort);
+    var animals = animal.getAllAnimals(searchee, perPage, pageSkip, sort);
     return animals;
 }
 module.exports = getAllAnimals;

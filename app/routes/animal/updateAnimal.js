@@ -27,9 +27,9 @@ const updateAnimal = async (req, res, next) => {
       var idsStr = idsArr.join(' ');
       throw new Error(idsStr);
     }
-    var nameExists = await checkAnimalName('edit', newAnimal.name, null);
+    var nameExists = await checkAnimalName('edit', newAnimal.name, oldAnimal.id);
     if (nameExists != null) fieldsArr.push('Name already exists.');
-    var descExists = await checkAnimalDesc('edit', newAnimal.description, null);
+    var descExists = await checkAnimalDesc('edit', newAnimal.description, oldAnimal.id);
     if (descExists != null) fieldsArr.push('Description already exists.');
     if (fieldsArr.length != 0) {
       var errStr = fieldsArr.join(' ');

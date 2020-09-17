@@ -16,12 +16,13 @@ const getAnimals = async (req, res, next)=>
         var animalArr = [];
         var page = animalPageService(req);
         animals.forEach(animal=>{
-          var animl = serializeAnimal(animal, `${req.originalUrl}/${animal.id}`);
+          var animl = serializeAnimal(animal, `${req.originalUrl}/${animal.id}`.replace('//','/'));
           animalArr.push(animl);
         })
         animalResults['_this'] = req.originalUrl;
         animalResults['items_this_page'] = animals.length;
         animalResults['total_items'] = animalCount;
+        animalResults['total_pages'] = totalPages;
         animalResults['hasNext'] = page < totalPages ? true : false;
         animalResults['hasPrev'] = page != 1 ? true : false;
         animalResults['results'] = animalArr;

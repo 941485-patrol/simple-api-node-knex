@@ -1,43 +1,37 @@
-const Status = require('../../models/status');
 const serializeStatus = require('./serializeStatus');
-const errmsg = require('../../errmsg');
-const pageStatuses = require('./pageStatuses');
-const sortStatuses = require('./sortStatuses');
-const searchStatuses = require('./searchStatuses');
-
+const Errormsg = require('../../errmsg');
+const statusPageService = require('../../services/status/pageStatus');
+const getAllStatusService = require('../../services/status/getAllStatus');
+const getAnimalsByStatus = require('../../services/status/getAnimalsByStatus');
+const getOneAnimal = require('../../services/animal/getOneAnimal');
+const knex = require('../../../knex/knex');
 const getStatuses = async function(req, res, next){
     try {
-        var page = pageStatuses(req);
-        pageSkip = parseInt(page) - parseInt(1);
         var perPage = 5;
-        var sort = sortStatuses(req);
-        var searchee = searchStatuses(req);
-        var statuses = await Status.find(searchee)
-            .populate('animal_ids')
-            .skip(pageSkip*perPage).limit(perPage)
-            .sort(sort);
-        var statusCount = await Status.find().estimatedDocumentCount();
-        var totalPages = Math.ceil(parseInt(statusCount)/perPage);
+        var statuses = await getAllStatusService(req, perPage);
         if (statuses.length == 0) {
-            var statusRes = {}
-            statusRes['results'] = {'message': 'No data.' }; 
-            res.status(200).json(statusRes);
+            res.status(200).json({message: 'No data.'});
         } else {
-            var statusRes = {}
+            var statusCount = statuses[0].count;
+            var totalPages = Math.ceil(parseInt(statusCount)/perPage);
+            var statusResults = {};
             var statusArr = [];
-            statuses.forEach((status)=>{
-                var statusObj = serializeStatus(status);
-                statusArr.push(statusObj);
+            var page = statusPageService(req);
+            statuses.forEach(function(status){
+                var stat = serializeStatus(status, `${req.originalUrl}/${status.id}`.replace('//','/'));
+                statusArr.push(stat);
             });
-            statusRes['totalPages'] = totalPages;
-            statusRes['_this'] = req.originalUrl;
-            statusRes['hasNext'] = page < totalPages ? true : false;
-            statusRes['hasPrev'] = page != 1 ? true : false;
-            statusRes['results'] = statusArr;
-            res.status(200).json(statusRes);
+            statusResults['_this'] = req.originalUrl;
+            statusResults['items_this_page'] = statuses.length;
+            statusResults['total_items'] = statusCount;
+            statusResults['total_pages'] = totalPages;
+            statusResults['hasNext'] = page < totalPages ? true : false;
+            statusResults['hasPrev'] = page != 1 ? true : false;
+            statusResults['results'] = statusArr;
+            res.status(200).json(statusResults);
         }
     } catch (error) {
-        errmsg(error, res);
+        Errormsg(error, res);
     }
     
 };

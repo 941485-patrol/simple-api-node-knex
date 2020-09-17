@@ -5,7 +5,7 @@ class Animal {
         this.req = req;
     }
 
-    getAllAnimals(searchee, perPage, page, pageSkip, sort){
+    getAllAnimals(searchee, perPage, pageSkip, sort){
         return knex('animals')
         .select(knex.raw('animals.*, COUNT(animals.id) over(), status.name AS statName, status.description AS statDesc, types.name AS typeName, types.environment AS typeEnv'))
         .leftJoin('status', 'animals.status_id', 'status.id')
