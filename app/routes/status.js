@@ -6,7 +6,7 @@ var upload = multer();
 const getStatuses = require('./status/getStatuses');
 const createStatus = require('./status/createStatus');
 const getStatus = require('./status/getStatus');
-// const updateStatus = require('./status/updateStatus');
+const updateStatus = require('./status/updateStatus');
 const deleteStatus = require('./status/deleteStatus');
 
 router.route('/')
@@ -15,7 +15,7 @@ router.route('/')
 
 router.route('/:id')
   .get(getStatus)
-  // .put(upload.none(), updateStatus)
+  .put(upload.none(), updateStatus)
   .delete(upload.none(), deleteStatus)
   
 module.exports = router;

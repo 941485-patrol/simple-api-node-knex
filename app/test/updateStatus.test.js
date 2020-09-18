@@ -1,85 +1,84 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Status = require('../models/status');
-const Animal = require('../models/animal');
 
 describe('Update Status', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
 
     it('Update a Status', async function(){
-        var status = await Status.findOne({name:'status9'});
+        var status = await knex('status').select('*').where({name: 'status9'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'status99', description:'description99'})
         .expect(301);
     });
 
     it('Avoid duplicate entry on update', async function(){
-        var status = await Status.findOne({name:'status99'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'status10', description:'description10'})
         .expect(400)
         .expect(function (res){
-            if (res.body.includes('Status name already exists.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description already exists.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name already exists.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description already exists.')===false) throw new Error('Test case failed.');
         })
     });
 
     it('Update status with same credentials', async function(){
-        var status = await Status.findOne({name:'status99'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'status99', description:'description99'})
         .expect(301);
     });
 
     it('Check if animal status_id is updated also', async function(){
-        var status = await Status.findOne({name:'status99'});
-        var animal = await Animal.findOne({status_id:status._id});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
+        var animal = await knex('animals').select('*').where({status_id: status.id}).first();
         await agent
-        .get(`/api/animal/${animal._id}`)
+        .get(`/api/animal/${animal.id}`)
         .expect(200)
         .expect(function(res){
             var statusObj = res.body.status;
-            if (statusObj.status_id!=status._id) throw new Error('Both status id must be equal.');
+            if (statusObj.status_id!=status.id) throw new Error('Both status id must be equal.');
         });
     });
 
     it('Error if empty or incomplete fields on update', async function(){
-        var status = await Status.findOne({name:'status99'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'', description:''})
         .expect(400)
         .expect(function (res){
-            if (res.body.includes('Status name is required.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case failed.');
         });
     });
 
     it('Error if incomplete fields on update', async function(){
-        var status = await Status.findOne({name:'status99'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'a', description:'abc'})
         .expect(400)
         .expect(function (res){
-            if (res.body.includes('No status has one letter...')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description is too short...')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is too short.')===false) throw new Error('Test case failed.');
         });
     });
 
     it('Error if status id on url does not exist.', function(done){
         agent
-        .put(`/api/status/0123456789ab`)
+        .put(`/api/status/88`)
         .send({name:'someName', description:'someDescription'})
         .expect(400)
         .expect(['Cannot find status.'], done);
@@ -105,9 +104,9 @@ describe('Update Status', function(){
     });
 
     it('Refresh database', async function(){
-        var status = await Status.findOne({name:'status99'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'status9', description:'description9'})
         .expect(301);
     });
@@ -119,9 +118,9 @@ describe('Update Status', function(){
     });
 
     it('Error on updating a status if unauthenticated', async function(){
-        var status = await Status.findOne({name:'status9'});
+        var status = await knex('status').select('*').where({name: 'status9'}).first();
         agent
-        .put(`/api/status/${status._id}`)
+        .put(`/api/status/${status.id}`)
         .send({name:'status99', description:'description99'})
         .expect(401);
     });

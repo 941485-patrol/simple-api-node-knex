@@ -20,6 +20,10 @@ class Status {
         return knex('status').returning('id').insert({name: name, description: description});
     }
 
+    updateStatus(id, name, description){
+        return knex('status').returning('id').where({'id': id}).update({name: name, description: description});
+    }
+
     deleteStatus(id){
         return knex('status').where({'id': id}).del();
     }

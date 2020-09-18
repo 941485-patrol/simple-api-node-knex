@@ -44,7 +44,7 @@ describe('Delete Status', function(){
 
     it('Error if empty type id', function(done){
         agent
-        .delete(`/api/status/`)
+        .delete(`/api/status/      `)
         .expect(404, done);
     });
 

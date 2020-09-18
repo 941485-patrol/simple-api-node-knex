@@ -1,14 +1,13 @@
 var app = require('../testServer');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Type = require('../models/type');
-const Animal = require('../models/animal');
 
 describe('Update Type', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
