@@ -1,13 +1,13 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Status = require('../models/status');
 
 describe('Create Status', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -15,7 +15,7 @@ describe('Create Status', function(){
     it('Create a Status', function(done){
         agent
         .post('/api/status')
-        .send({name:'status13', description:'description13'})
+        .send({name:'status99', description:'description99'})
         .expect(200)
         .expect({'message': 'Status created.'}, done);
     });
@@ -23,11 +23,11 @@ describe('Create Status', function(){
     it('Error on double entry', function(done){
         agent
         .post('/api/status')
-        .send({name:'status9', description:'description9'})
+        .send({name:'status99', description:'description99'})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('Status name already exists.')==false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Name already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Description already exists.')==false) throw new Error('Test case failed.');
         }).end(done);
     });
 
@@ -38,8 +38,8 @@ describe('Create Status', function(){
         .expect(400)
         .expect((res, err)=>{
             if (err) throw err;
-            if (res.body.includes('Status name is required.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case failed.');
         }).end(done);
     });
 
@@ -50,15 +50,15 @@ describe('Create Status', function(){
         .expect(400)
         .expect((res, err)=>{
             if (err) throw err;
-            if (res.body.includes('No status has one letter...')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Status description is too short...')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is too short.')===false) throw new Error('Test case failed.');
         }).end(done);
     });
 
     it('Refresh database', async function(){
-        var status = await Status.findOne({name:'status13'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .delete(`/api/status/${status._id}`)
+        .delete(`/api/status/${status.id}`)
         .expect(200)
         .expect({'message': 'Status deleted.'});
     });

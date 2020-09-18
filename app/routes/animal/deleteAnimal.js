@@ -1,4 +1,4 @@
-const validateUrl = require('../../services/animal/validateUrl.js');
+const validateUrl = require('../../services/url/validateUrl');
 const deleteAnimalService = require('../../services/animal/deleteAnimal');
 const pullStatusService = require('../../services/animal/pullStatus');
 const pullTypeService = require('../../services/animal/pullType');

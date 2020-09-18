@@ -1,7 +1,7 @@
 const knex = require('../../../knex/knex.js');
 const Errormsg = require('../../errmsg.js');
 const getOneAnimal = require('../../services/animal/getOneAnimal.js');
-const validateUrl = require('../../services/animal/validateUrl.js');
+const validateUrl = require('../../services/url/validateUrl');
 const serializeAnimal = require('../../services/animal/serializeAnimal');
 const getAnimal = async (req, res, next)=>{
   try {

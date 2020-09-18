@@ -1,22 +1,17 @@
-const Status = require('../../models/status');
-const Animal = require('../../models/animal');
 const Errmsg = require('../../errmsg');
-const mongoose = require('mongoose');
+const deleteStatusService = require('../../services/status/deleteStatus');
+const validateUrl = require('../../services/url/validateUrl');
 const deleteStatus = async function (req, res, next) {
     try {
-        if( mongoose.isValidObjectId(req.params.id) === false ) throw new Error('Invalid Url.');
-        var deleteStatus = await Status.deleteOne({_id: req.params.id});
-        if ( deleteStatus.deletedCount != 1) throw new Error('Error deleting data.');
-        var animals = await Animal.find({status_id: req.params.id});
-        if ( animals != null) {
-          animals.forEach(async animal => {
-            animal.status_id = null;
-            await animal.save({validateBeforeSave: false});
-          });
-        }
-        res.status(200).json({'message': 'Status deleted.'})
+      var validUrl = await validateUrl(req.params.id);
+      var status = await deleteStatusService(validUrl.url);
+      if ( status == 1) {
+        res.status(200).json({'message': 'Status deleted.'});
+      } else {
+        throw new Error('Status ID does not exist.');
+      }
     } catch (error) {
-        Errmsg(error, res);
+      Errmsg(error, res);
     }
 }
 module.exports = deleteStatus;

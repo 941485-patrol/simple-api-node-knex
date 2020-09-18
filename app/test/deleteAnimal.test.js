@@ -13,8 +13,8 @@ describe('Delete Animal', function(){
     });
 
     it('Create an animal for deletion', async function(){
-        var type = await knex('types').select('*').where('id',2).first();
-        var status = await knex('status').select('*').where('id',1).first();
+        var type = await knex('types').select('*').where('id',5).first();
+        var status = await knex('status').select('*').where('id',6).first();
         await agent
         .post('/api/animal')
         .send({name:'animal99', description: 'description99', type_id: type.id, status_id: status.id})
@@ -40,16 +40,16 @@ describe('Delete Animal', function(){
     //         });
     // });
 
-    // it('Deleted animal is not present on status listing', async function(){
-    //     var status = await Status.findOne({name:'status6'});
-    //     await agent
-    //         .get(`/api/status/${status._id}`)
-    //         .expect(200)
-    //         .expect(function(res){
-    //             var animals = res.body.animals;
-    //             if (animals.length != 0) throw new Error('Animal id must be pulled.');
-    //         });
-    // });
+    it('Deleted animal is not present on status listing', async function(){
+        var status = await knex('status').select('*').where('id',6).first();
+        await agent
+            .get(`/api/status/${status.id}`)
+            .expect(200)
+            .expect(function(res){
+                var animals = res.body.animals;
+                if (animals.length != 0) throw new Error('Animal id must be pulled.');
+            });
+    });
 
     it('Error if wrong type id in url', function(done){
         agent

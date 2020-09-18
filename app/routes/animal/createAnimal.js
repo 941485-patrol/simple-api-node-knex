@@ -1,4 +1,3 @@
-const knex = require('../../../knex/knex');
 const Errormsg = require('../../errmsg');
 const createAnimalService = require('../../services/animal/createAnimal');
 const validateAnimalService = require('../../services/animal/validateAnimal');

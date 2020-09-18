@@ -1,12 +1,13 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Status = require('../models/status');
+
 describe('Delete Status', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -14,31 +15,31 @@ describe('Delete Status', function(){
     it('Create a Status for deletion', function(done){
         agent
         .post('/api/status')
-        .send({name:'status13', description:'description13'})
+        .send({name:'status99', description:'description99'})
         .expect(200)
         .expect({'message': 'Status created.'}, done);
     });
 
     it('Delete a Status', async function(){
-        var status = await Status.findOne({name:'status13'});
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent
-        .delete(`/api/status/${status._id}`)
+        .delete(`/api/status/${status.id}`)
         .expect(200)
         .expect({'message': 'Status deleted.'});
     });
 
-    it('Error on invalid type id url', function(done){
+    it('Error on invalid status id url', function(done){
         agent
         .delete(`/api/status/invalid_url`)
         .expect(400)
         .expect(['Invalid Url.'], done);
     });
 
-    it('Error if type id not found', function(done){
+    it('Error if status id not found', function(done){
         agent
-        .delete(`/api/status/0123456789ab`)
+        .delete(`/api/status/77`)
         .expect(400)
-        .expect(['Error deleting data.'], done);
+        .expect(['Status ID does not exist.'], done);
     });
 
     it('Error if empty type id', function(done){
@@ -54,9 +55,9 @@ describe('Delete Status', function(){
     });
 
     it('Error deleting a status if unauthenticated', async function(){
-        var status = await Status.findOne({name:'status12'});
+        var status = await knex('status').select('*').where({name: 'status12'}).first();
         await agent
-        .delete(`/api/status/${status._id}`)
+        .delete(`/api/status/${status.id}`)
         .expect(401);
     });
 });

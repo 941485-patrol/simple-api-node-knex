@@ -1,5 +1,5 @@
 const Errormsg = require('../../errmsg');
-const validateUrl = require('../../services/animal/validateUrl');
+const validateUrl = require('../../services/url/validateUrl');
 const validateAnimalService = require('../../services/animal/validateAnimal');
 const getOneAnimal = require('../../services/animal/getOneAnimal');
 const getTypeService = require('../../services/type/getType');
@@ -38,9 +38,7 @@ const updateAnimal = async (req, res, next) => {
     var updated = await updateAnimalService(oldAnimal.id, newAnimal.name, newAnimal.description, newAnimal.status_id, newAnimal.type_id);
     if (updated.length == 0) throw new Error('Error updating animal.');
     await pullStatus(oldAnimal.id);
-    // if (oldStatus.length == 0) throw new Error('Error pulling old status.');
     await pullType(oldAnimal.id);
-    // if (oldType.length == 0) throw new Error('Error pulling old type.');
     var newStatus = await pushStatus(oldAnimal.id, newAnimal.status_id);
     if (newStatus.length == 0) throw new Error('Error pushing status.');
     var newType = await pushType(oldAnimal.id, newAnimal.status_id);

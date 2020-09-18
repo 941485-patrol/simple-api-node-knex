@@ -17,17 +17,17 @@ const getStatuses = async function(req, res, next){
             var statusArr = [];
             var page = statusPageService(req);
             statuses.forEach(function(status){
-                var stat = serializeStatus(status, req.originalUrl);
+                var stat = serializeStatus(status, req.originalUrl, one=false);
                 statusArr.push(stat);
             });
             for (var stats of statusArr) {
-                var garr = [];
+                var animalArr = [];
                 for (var id of stats.animals) {
                     var animal = await getAnimalsByStatus(id);
                     animal = serializeAnimals(animal);
-                    garr.push(animal);
+                    animalArr.push(animal);
                 }
-                stats.animals = garr;
+                stats.animals = animalArr;
             }
             statusResults['_this'] = req.originalUrl;
             statusResults['items_this_page'] = statuses.length;

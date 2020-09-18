@@ -1,7 +1,7 @@
 const serializeAnimal = (animal, url, one=false)=>{
   var typeObj = null;
   var statusObj = null;
-  var _this  = one == false ? `${url}/${animal.id}`.replace(/\/{2,}/,'/'):`${url}`.replace(/\/{2,}/,'/');
+  var _this  = one == false ? `/api/animal/${animal.id}`.replace(/\/{2,}/,'/'):`${url}`.replace(/\/{2,}/,'/');
   if (animal.type_id != null) {
     typeObj = {
       '_this': `/api/type/${animal.type_id}`,

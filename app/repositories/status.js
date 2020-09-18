@@ -16,6 +16,22 @@ class Status {
         return knex('status').select('*').whereRaw('??=?', [column, value]).first();
     }
 
+    createStatus(name, description){
+        return knex('status').returning('id').insert({name: name, description: description});
+    }
+
+    deleteStatus(id){
+        return knex('status').where({'id': id}).del();
+    }
+
+    checkStatusName(searchee){
+        return knex('status').select('status.name').where(searchee).first();
+    }
+
+    checkStatusDesc(searchee){
+        return knex('status').select('status.description').where(searchee).first();
+    }
+
     getAnimalIds(id){
         return knex('animals').select('*').where({'id': id}).first();
     }
