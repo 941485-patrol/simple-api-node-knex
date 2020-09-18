@@ -17,7 +17,7 @@ class Status {
     }
 
     getAnimalIds(id){
-        return knex('animals').select('*').where('status_id','=', id);
+        return knex('animals').select('*').where({'id': id}).first();
     }
 }
 module.exports = Status;

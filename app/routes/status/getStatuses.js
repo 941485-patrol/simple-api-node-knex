@@ -1,10 +1,9 @@
-const serializeStatus = require('./serializeStatus');
 const Errormsg = require('../../errmsg');
 const statusPageService = require('../../services/status/pageStatus');
 const getAllStatusService = require('../../services/status/getAllStatus');
 const getAnimalsByStatus = require('../../services/status/getAnimalsByStatus');
-const getOneAnimal = require('../../services/animal/getOneAnimal');
-const knex = require('../../../knex/knex');
+const serializeStatus = require('../../services/status/serializeStatus');
+const serializeAnimals = require('../../services/status/serializeAnimals');
 const getStatuses = async function(req, res, next){
     try {
         var perPage = 5;
@@ -18,9 +17,18 @@ const getStatuses = async function(req, res, next){
             var statusArr = [];
             var page = statusPageService(req);
             statuses.forEach(function(status){
-                var stat = serializeStatus(status, `${req.originalUrl}/${status.id}`.replace('//','/'));
+                var stat = serializeStatus(status, req.originalUrl);
                 statusArr.push(stat);
             });
+            for (var stats of statusArr) {
+                var garr = [];
+                for (var id of stats.animals) {
+                    var animal = await getAnimalsByStatus(id);
+                    animal = serializeAnimals(animal);
+                    garr.push(animal);
+                }
+                stats.animals = garr;
+            }
             statusResults['_this'] = req.originalUrl;
             statusResults['items_this_page'] = statuses.length;
             statusResults['total_items'] = statusCount;

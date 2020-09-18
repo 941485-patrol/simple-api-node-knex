@@ -1,4 +1,4 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
 const agent = request.agent(app);
 
@@ -6,7 +6,7 @@ describe('Get Statuses', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -49,7 +49,7 @@ describe('Get Statuses', function(){
         .get(`/api/status/?page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -94,7 +94,7 @@ describe('Get Statuses', function(){
         .get(`/api/status/?sort=-name&page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -134,15 +134,15 @@ describe('Get Statuses', function(){
         }).end(done);
     });
 
-    // it('No data message if there is no status inserted',  function(){
-    //     await Status.deleteMany();
-    //     agent
-    //     .get(`/api/status`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
-    //     }).end(done);
-    // });
+    // // it('No data message if there is no status inserted',  function(){
+    // //     await Status.deleteMany();
+    // //     agent
+    // //     .get(`/api/status`)
+    // //     .expect(200)
+    // //     .expect(function(res){
+    // //         if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+    // //     }).end(done);
+    // // });
 
     it('Paging error (page must be a digit)', function(done){
         agent

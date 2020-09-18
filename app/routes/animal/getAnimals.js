@@ -1,7 +1,7 @@
 const Errormsg = require('../../errmsg');
 const animalPageService = require('../../services/animal/pageAnimals');
 const getAllAnimalsService = require('../../services/animal/getAllAnimals');
-const serializeAnimal = require('./serializeAnimal');
+const serializeAnimal = require('../../services/animal/serializeAnimal');
 const getAnimals = async (req, res, next)=>
   {
     try {
@@ -16,7 +16,7 @@ const getAnimals = async (req, res, next)=>
         var animalArr = [];
         var page = animalPageService(req);
         animals.forEach(animal=>{
-          var animl = serializeAnimal(animal, `${req.originalUrl}/${animal.id}`.replace('//','/'));
+          var animl = serializeAnimal(animal, req.originalUrl, one=false);
           animalArr.push(animl);
         })
         animalResults['_this'] = req.originalUrl;
