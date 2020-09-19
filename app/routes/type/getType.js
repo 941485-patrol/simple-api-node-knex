@@ -1,13 +1,22 @@
-const Type = require('../../models/type');
 const Errormsg = require('../../errmsg');
-const serializeType = require('./serializeType');
-const mongoose = require('mongoose');
+const validateUrl = require('../../services/url/validateUrl');
+const getOneType = require('../../services/type/getType');
+const getOneAnimal = require('../../services/type/getAnimalsByType');
+const serializeType = require('../../services/type/serializeType');
+const serializeAnimal = require('../../services/type/serializeAnimals');
 const getType = async (req, res, next)=>{
   try {
-    if( mongoose.isValidObjectId(req.params.id) === false ) throw new Error('Invalid Url.');
-    var type = await Type.findOne({_id : req.params.id}).populate('animal_ids');
-    if (type==null) throw new Error("Cannot find type.");
-    var typeObj = serializeType(type);
+    var valildUrl = await validateUrl(req.params.id);
+    var type = await getOneType('id', valildUrl.url);
+    if (type == null) throw new Error('Cannot find type.');
+    var typeObj = serializeType(type, req.originalUrl, one=true);
+    var animalArr = [];
+    for (id of typeObj.animals) {
+      var animal = await getOneAnimal(id);
+      animal = serializeAnimal(animal);
+      animalArr.push(animal);
+    }
+    typeObj.animals = animalArr;
     res.status(200).json(typeObj);
   } catch (error) {
     Errormsg(error, res);

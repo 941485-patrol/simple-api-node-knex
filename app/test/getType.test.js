@@ -1,24 +1,24 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Type = require('../models/type');
 
 describe('Get Type', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
 
     it('Get one type', async function(){
-        var type = await Type.findOne({name:'type4'});
+        var type = await knex('types').select('*').where({id: 4}).first();
         await agent
-        .get(`/api/type/${type._id}`)
+        .get(`/api/type/${type.id}`)
         .expect(200)
         .expect(function(res){
-            if (res.body._id != type._id) throw new Error('Test case failed');
+            if (res.body.id != type.id) throw new Error('Test case failed');
         });
     });
 
@@ -31,7 +31,7 @@ describe('Get Type', function(){
 
     it('Error if type id does not exist', function(done){
         agent
-        .get(`/api/type/0123456789ab`)
+        .get(`/api/type/90`)
         .expect(400)
         .expect(['Cannot find type.'], done);
     });
@@ -43,9 +43,9 @@ describe('Get Type', function(){
     });
 
     it('Get one type error if unauthenticated', async function(){
-        var type = await Type.findOne({name:'type4'});
+        var type = await knex('types').select('*').where({id: 4}).first();
         await agent
-        .get(`/api/type/${type._id}`)
+        .get(`/api/type/${type.id}`)
         .expect(401);
     });
 });

@@ -1,41 +1,43 @@
-const Type = require('../../models/type');
 const Errormsg = require('../../errmsg');
-const serializeType = require('./serializeType');
-const pageTypes = require('./pageTypes');
-const sortTypes = require('./sortTypes');
-const searchTypes = require('./searchTypes');
-
+const typePageService = require('../../services/type/pageType');
+const getAllTypeService = require('../../services/type/getAllTypes');
+const getAnimalsByType = require('../../services/type/getAnimalsByType');
+const serializeType = require('../../services/type/serializeType');
+const serializeAnimals = require('../../services/type/serializeAnimals');
 const getTypes = async (req, res, next)=>
 {
   try {
-    var page = pageTypes(req);
-    pageSkip = parseInt(page) - parseInt(1);
     var perPage = 5;
-    var sort = sortTypes(req);
-    var searchee = searchTypes(req);
-    var types = await Type.find(searchee)
-      .populate('animal_ids')
-      .skip(pageSkip*perPage).limit(perPage)
-      .sort(sort);
-    var typeCount = await Type.find().estimatedDocumentCount();
-    var totalPages = Math.ceil(parseInt(typeCount)/perPage);
+    var types = await getAllTypeService(req, perPage);
     if (types.length == 0) {
-      var typeRes = {};
-      typeRes['results'] = {'message': 'No data.'};
-      res.status(200).json(typeRes);
+      res.status(200).json({message: 'No data.'});
     } else {
-      var typeRes = {};
-      var typesArr = [];
-      types.forEach(type => {
-        var typeObj = serializeType(type);
-        typesArr.push(typeObj);
+      var typeCount = types[0].count;
+      var totalPages = Math.ceil(parseInt(typeCount)/perPage);
+      var typeResults = {};
+      var typeArr = [];
+      var page = typePageService(req);
+      types.forEach(function(type){
+        var typ = serializeType(type, req.originalUrl, one=false);
+        typeArr.push(typ);
       });
-      typeRes['totalPages'] = totalPages;
-      typeRes['_this'] = req.originalUrl;
-      typeRes['hasNext'] = page < totalPages ? true : false;
-      typeRes['hasPrev'] = page != 1 ? true : false;
-      typeRes['results'] = typesArr;
-      res.status(200).json(typeRes);
+      for (var types of typeArr) {
+        var animalArr = [];
+        for (var id of types.animals) {
+          var animal = await getAnimalsByType(id);
+          animal = serializeAnimals(animal);
+          animalArr.push(animal);
+        }
+        types.animals = animalArr;
+      }
+      typeResults['_this'] = req.originalUrl;
+      typeResults['items_this_page'] = types.length;
+      typeResults['total_items'] = typeCount;
+      typeResults['total_pages'] = totalPages;
+      typeResults['hasNext'] = page < totalPages ? true : false;
+      typeResults['hasPrev'] = page != 1 ? true : false;
+      typeResults['results'] = typeArr;
+      res.status(200).json(typeResults);
     }
   } catch (error) {
     Errormsg(error, res);

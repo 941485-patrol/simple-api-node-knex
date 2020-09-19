@@ -2,7 +2,7 @@ var express = require("express");
 var app = express();
 var cookieParser = require('cookie-parser');
 var indexRouter = require('./routes/index');
-// var typeRouter = require('./routes/type');
+var typeRouter = require('./routes/type');
 var animalRouter = require('./routes/animal');
 var statusRouter = require('./routes/status');
 var userRouter = require('./routes/user');
@@ -25,7 +25,7 @@ app.options('*', cors(corsOptions)); //preflight
 app.use('/', indexRouter);
 app.use('/api/user', userRouter);
 app.use(loginRequired);
-// app.use('/api/type', typeRouter);
+app.use('/api/type', typeRouter);
 app.use('/api/status', statusRouter);
 app.use('/api/animal', animalRouter);
 module.exports = app;

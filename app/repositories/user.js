@@ -16,6 +16,10 @@ class User {
         return knex('users').insert({username: username, password: hash},['id']);
     }
 
+    getToken(token) {
+        return knex('users').select('id').where({token: token}).first();
+    }
+
     updateUserToken(userId, accessToken) {
         return knex('users').where('id', '=', userId).update({token: accessToken}, ['token']);
     }

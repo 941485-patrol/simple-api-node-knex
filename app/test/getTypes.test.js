@@ -1,4 +1,4 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
 const agent = request.agent(app);
 
@@ -6,7 +6,7 @@ describe('Get Types', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -49,7 +49,7 @@ describe('Get Types', function(){
         .get(`/api/type/?page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -94,7 +94,7 @@ describe('Get Types', function(){
         .get(`/api/type/?sort=-name&page=4`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -121,7 +121,7 @@ describe('Get Types', function(){
         .get(`/api/type/?s=tayp5`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -148,7 +148,7 @@ describe('Get Types', function(){
         .get(`/api/type/?s=nAm&page=3&sort=name`)
         .expect(200)
         .expect(function(res){
-            if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
         }).end(done);
     });
 
@@ -159,7 +159,7 @@ describe('Get Types', function(){
     //     .expect(200)
     //     .expect(function(res){
             
-    //         if (res.body.results.message != 'No data.') throw new Error ('Should be "No data."');
+    //         if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
     //     })
     // });
 

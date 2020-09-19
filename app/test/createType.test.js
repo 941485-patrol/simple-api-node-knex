@@ -1,13 +1,13 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
+const knex = require('../../knex/knex');
 const agent = request.agent(app);
-const Type = require('../models/type');
 
-describe('Create Type', function(done){
+describe('Create Type', function(){
     it('Login first', function(done){
         agent
         .post('/api/user/login')
-        .send({username:'username', password:'Password123'})
+        .send({username:'username', password:'Password1234'})
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
@@ -15,7 +15,7 @@ describe('Create Type', function(done){
     it('Create a Type',  function(done){
         agent
         .post('/api/type')
-        .send({name:'type13', environment:'environment13'})
+        .send({name:'type99', environment:'environment99'})
         .expect(200)
         .expect({"message": "Type created"}, done);
     });
@@ -26,8 +26,8 @@ describe('Create Type', function(done){
         .send({name:'type1', environment:'environment12'})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('Type name already exists.')==false) throw new Error('Test case failed.');
-            if (res.body.includes('Type environment already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Name already exists.')==false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment already exists.')==false) throw new Error('Test case failed.');
         }).end(done);
     });
 
@@ -37,8 +37,8 @@ describe('Create Type', function(done){
         .send({name:'', environment:''})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('Type name is required.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Environment of animal is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is required.')===false) throw new Error('Test case failed.');
         }).end(done);
     })
 
@@ -49,15 +49,15 @@ describe('Create Type', function(done){
         .expect(400)
         .expect(function(res){
             
-            if (res.body.includes('No type has one letter...')===false) throw new Error('Test case failed.');
-            if (res.body.includes('No environment has one letter...')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is too short.')===false) throw new Error('Test case failed.');
         }).end(done);
     });
 
     it('Refresh database', async function(){
-        var type = await Type.findOne({name:'type13'});
+        var type = await knex('types').select('*').where({name: 'type99'}).first();
         await agent
-        .delete(`/api/type/${type._id}`)
+        .delete(`/api/type/${type.id}`)
         .expect(200)
         .expect({'message': 'Type deleted.'});
     });

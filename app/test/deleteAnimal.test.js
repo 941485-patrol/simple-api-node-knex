@@ -29,16 +29,16 @@ describe('Delete Animal', function(){
         .expect({'message': 'Animal deleted.'});
     });
 
-    // it('Deleted animal is not present on type listing', async function(){
-    //     var type = await Type.findOne({name:'type5'});
-    //     await agent
-    //         .get(`/api/type/${type._id}`)
-    //         .expect(200)
-    //         .expect(function(res){
-    //             var animals = res.body.animals;
-    //             if (animals.length != 0) throw new Error('Animal id must be pulled.');
-    //         });
-    // });
+    it('Deleted animal is not present on type listing', async function(){
+        var type = await knex('types').select('*').where('id',5).first();
+        await agent
+            .get(`/api/type/${type.id}`)
+            .expect(200)
+            .expect(function(res){
+                var animals = res.body.animals;
+                if (animals.length != 0) throw new Error('Animal id must be pulled.');
+            });
+    });
 
     it('Deleted animal is not present on status listing', async function(){
         var status = await knex('status').select('*').where('id',6).first();

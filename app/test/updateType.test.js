@@ -1,4 +1,4 @@
-var app = require('../testServer');
+var app = require('../server');
 const request = require('supertest');
 const knex = require('../../knex/knex');
 const agent = request.agent(app);
@@ -13,76 +13,75 @@ describe('Update Type', function(){
     });
 
     it('Update a Type', async function(){
-        var type = await Type.findOne({name:'type8'});
+        var type = await knex('types').select('*').where({name: 'type8'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'type88', environment:'environment88'})
         .expect(301)
     });
 
     it('Avoid duplicate entry on update', async function(){
-        var type = await Type.findOne({name:'type88'});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
-        .send({name:'type9', environment:'environment9'})
+        .put(`/api/type/${type.id}`)
+        .send({name:'type11', environment:'environment6'})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('Type name already exists.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Type environment already exists.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name already exists.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment already exists.')===false) throw new Error('Test case failed.');
         })
     });
 
     it('Update type with same credentials', async function(){
-        var type = await Type.findOne({name:'type88'});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'type88', environment:'environment88'})
         .expect(301)
     });
 
     it('Check if animal type_id is updated also', async function(){
-        var type = await Type.findOne({name:'type88'});
-        var animal = await Animal.findOne({type_id:type._id});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
+        var animal = await knex('animals').select('*').where({type_id: type.id}).first();
         await agent
-        .get(`/api/animal/${animal._id}`)
+        .get(`/api/animal/${animal.id}`)
         .expect(200)
         .expect(function(res){
             var statusObj = res.body.type;
-            if (statusObj.type_id!=type._id) throw new Error('Both type id must be equal.');
+            if (statusObj.type_id!=type.id) throw new Error('Both type id must be equal.');
         });
     });
 
     it('Error if empty or incomplete fields on update', async function(){
-        var type = await Type.findOne({name:'type88'});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'', environment:''})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('Type name is required.')===false) throw new Error('Test case failed.');
-            if (res.body.includes('Environment of animal is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is required.')===false) throw new Error('Test case failed.');
         })
     });
 
     it('Error if incomplete fields on update', async function(){
-        var type = await Type.findOne({name:'type88'});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'a', environment:'abc'})
         .expect(400)
         .expect(function(res){
-            if (res.body.includes('No type has one letter...')===false) throw new Error('Test case failed.');
-            if (res.body.includes('No environment has one letter...')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Name is too short.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is too short.')===false) throw new Error('Test case failed.');
         })
     });
 
-    it('Error if type id does not exist.', async function(){
-        var type = await Type.findOne({name:'type88'});
-        await agent
-        .put(`/api/type/0123456789ab`)
+    it('Error if type id does not exist.', function(done){
+        agent
+        .put(`/api/type/99`)
         .send({name:'type88', environment:'environment88'})
         .expect(400)
-        .expect(['Cannot find type.'])
+        .expect(['Cannot find type.'], done);
     });
 
     it('Error on invalid type id on url.', function(done){
@@ -105,9 +104,9 @@ describe('Update Type', function(){
     });
 
     it('Refresh database', async function(){
-        var type = await Type.findOne({name:'type88'});
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'type8', environment:'environment8'})
         .expect(301);
     });
@@ -119,9 +118,9 @@ describe('Update Type', function(){
     });
 
     it('Update a type error if unauthenticated', async function(){
-        var type = await Type.findOne({name:'type8'});
+        var type = await knex('types').select('*').where({name: 'type8'}).first();
         await agent
-        .put(`/api/type/${type._id}`)
+        .put(`/api/type/${type.id}`)
         .send({name:'type88', environment:'environment88'})
         .expect(401);
     });
