@@ -1,3 +1,3 @@
 api: nodemon --require dotenv/config app/server.js
 testing: mocha app/test
-web: app/server.js
+web: node app/server.js
