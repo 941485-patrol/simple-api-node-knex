@@ -1,9 +1,9 @@
 #### NodeJS API using ExpressJS, Joi, KnexJS and PostgreSQL.
 ### Demo
-https://some-nodejs-api.herokuapp.com
-username: username
-password: Password1234
-*Note: Use [Talend](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=en) or [Postman](https://www.postman.com/) to open the website.
+https://some-nodejs-api.herokuapp.com \
+username: username \
+password: Password1234 \
+*Note: Use [Talend](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=en) or [Postman](https://www.postman.com/) to open the website. \
 
 ### Instructions
 - Clone repo
@@ -31,8 +31,8 @@ npm run dev
 ```sh
 npm run test
 ```
-*Note: Be sure to run postgresql server and create a database before cloning.
-*Test notes: Be sure to run seeder again after testing.
+*Note: Be sure to run postgresql server and create a database before cloning. \
+*Test notes: Be sure to run seeder again after testing. \
 
 ### Endpoints
 |Method|URL|Form|Description|
