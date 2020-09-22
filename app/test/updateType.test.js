@@ -64,6 +64,18 @@ describe('Update Type', function(){
         })
     });
 
+    it('Error if missing fields on update', async function(){
+        var type = await knex('types').select('*').where({name: 'type88'}).first();
+        await agent
+        .put(`/api/type/${type.id}`)
+        .send()
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is required.')===false) throw new Error('Test case failed.');
+        })
+    });
+
     it('Error if incomplete fields on update', async function(){
         var type = await knex('types').select('*').where({name: 'type88'}).first();
         await agent

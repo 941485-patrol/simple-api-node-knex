@@ -64,6 +64,18 @@ describe('Update Status', function(){
         });
     });
 
+    it('Error if missing fields on update', async function(){
+        var status = await knex('status').select('*').where({name: 'status99'}).first();
+        await agent
+        .put(`/api/status/${status.id}`)
+        .send({})
+        .expect(400)
+        .expect(function (res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case failed.');
+        });
+    });
+
     it('Error if incomplete fields on update', async function(){
         var status = await knex('status').select('*').where({name: 'status99'}).first();
         await agent

@@ -43,6 +43,18 @@ describe('Create Status', function(){
         }).end(done);
     });
 
+    it('Missing fields validation', function(done){
+        agent
+        .post('/api/status')
+        .send({})
+        .expect(400)
+        .expect((res, err)=>{
+            if (err) throw err;
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case failed.');
+        }).end(done);
+    });
+
     it('Incomplete fields validation', function(done){
         agent
         .post('/api/status')

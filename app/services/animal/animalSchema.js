@@ -6,6 +6,7 @@ const animalSchema = Joi.object({
         .max(50)
         .error(function(errors){
             errors.forEach(err => {
+                if (err.code == 'any.required') err.message = 'Name is required';
                 if (err.code == 'string.empty') err.message = 'Name is required';
                 if (err.code == 'string.base') err.message = 'Name is required';
                 if (err.code == 'string.min') err.message = 'Name is too short';
@@ -19,6 +20,7 @@ const animalSchema = Joi.object({
         .max(100)
         .error(function(errors){
             errors.forEach(err => {
+                if (err.code == 'any.required') err.message = 'Description is required';
                 if (err.code == 'string.empty') err.message = 'Description is required';
                 if (err.code == 'string.base') err.message = 'Description is required';
                 if (err.code == 'string.min') err.message = 'Description is too short';
@@ -30,6 +32,7 @@ const animalSchema = Joi.object({
         .required()
         .error(function(errors){
             errors.forEach(err=>{
+                if (err.code == 'any.required') err.message = 'Invalid Status ID';
                 if (err.code == 'number.base') err.message = 'Invalid Status ID';
                 if (err.code == 'number.integer') err.message = 'Invalid Status ID';
             });
@@ -39,6 +42,7 @@ const animalSchema = Joi.object({
         .required()
         .error(function(errors){
             errors.forEach(err=>{
+                if (err.code == 'any.required') err.message = 'Invalid Type ID';
                 if (err.code == 'number.base') err.message = 'Invalid Type ID';
                 if (err.code == 'number.integer') err.message = 'Invalid Type ID';
             })

@@ -169,6 +169,20 @@ describe('Update Animal', function(){
         })
     });
 
+    it('Error on missing fields', async function(){
+        var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
+        await agent
+        .put(`/api/animal/${animalToUpd.id}`)
+        .send()
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+        })
+    });
+
     it('Error on incomplete fields', async function(){
         var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
         await agent

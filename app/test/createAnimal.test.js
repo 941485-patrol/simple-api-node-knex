@@ -94,6 +94,19 @@ describe('Create Animal', function(){
         }).end(done);
     });
 
+    it('Missing fields validation',  function(done){
+        agent
+        .post('/api/animal')
+        .send({})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Description is required.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Type ID.')===false) throw new Error('Test case has failed.');
+            if (res.body.includes('Invalid Status ID.')===false) throw new Error('Test case has failed.');
+        }).end(done);
+    });
+
     it('Avoid duplicate entry (both)', async function(){
         var type = await knex('types').select('*').where('id',2).first();
         var status = await knex('status').select('*').where('id',1).first();

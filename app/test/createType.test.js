@@ -54,6 +54,17 @@ describe('Create Type', function(){
         }).end(done);
     });
 
+    it('Missing fields validation',  function(done){
+        agent
+        .post('/api/type')
+        .send({})
+        .expect(400)
+        .expect(function(res){
+            if (res.body.includes('Name is required.')===false) throw new Error('Test case failed.');
+            if (res.body.includes('Environment is required.')===false) throw new Error('Test case failed.');
+        }).end(done);
+    })
+
     it('Refresh database', async function(){
         var type = await knex('types').select('*').where({name: 'type99'}).first();
         await agent
