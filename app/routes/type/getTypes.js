@@ -12,7 +12,7 @@ const getTypes = async (req, res, next)=>
     if (types.length == 0) {
       res.status(200).json({message: 'No data.'});
     } else {
-      var typeCount = types[0].count;
+      var typeCount = parseInt(types[0].count);
       var totalPages = Math.ceil(parseInt(typeCount)/perPage);
       var typeResults = {};
       var typeArr = [];

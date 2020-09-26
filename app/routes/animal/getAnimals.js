@@ -10,7 +10,7 @@ const getAnimals = async (req, res, next)=>
       if (animals.length == 0) {
         res.status(200).json({message: 'No data.'});
       } else {
-        var animalCount = animals[0].count;
+        var animalCount = parseInt(animals[0].count);
         var totalPages = Math.ceil(parseInt(animalCount)/perPage);
         var animalResults = {};
         var animalArr = [];

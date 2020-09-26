@@ -11,7 +11,7 @@ const getStatuses = async function(req, res, next){
         if (statuses.length == 0) {
             res.status(200).json({message: 'No data.'});
         } else {
-            var statusCount = statuses[0].count;
+            var statusCount = parseInt(statuses[0].count);
             var totalPages = Math.ceil(parseInt(statusCount)/perPage);
             var statusResults = {};
             var statusArr = [];
