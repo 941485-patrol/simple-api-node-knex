@@ -21,7 +21,7 @@ class Status {
     }
 
     updateStatus(id, name, description){
-        return knex('status').returning('id').where({'id': id}).update({name: name, description: description});
+        return knex('status').returning('id').where({'id': id}).update({name: name, description: description, updated_at: knex.raw('NOW()')});
     }
 
     deleteStatus(id){

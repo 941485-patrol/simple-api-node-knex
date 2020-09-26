@@ -1,3 +1,4 @@
+const { andWhereNotBetween } = require('../../knex/knex.js');
 const knex = require('../../knex/knex.js');
 class Type {
     constructor(req=null){
@@ -21,7 +22,7 @@ class Type {
     }
 
     updateType(id, name, environment){
-        return knex('types').returning('id').where({'id': id}).update({name: name, environment: environment});
+        return knex('types').returning('id').where({'id': id}).update({name: name, environment: environment, updated_at: knex.raw('NOW()')});
     }
 
     deleteType(id){

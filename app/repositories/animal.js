@@ -28,7 +28,7 @@ class Animal {
     }
 
     updateAnimal(id, name, description, status_id, type_id){
-        return knex('animals').returning('id').where({'id': id}).update({name: name, description: description, status_id: status_id, type_id: type_id});
+        return knex('animals').returning('id').where({'id': id}).update({name: name, description: description, status_id: status_id, type_id: type_id, updated_at: knex.raw('NOW()')});
     }
 
     deleteAnimal(id){
@@ -44,19 +44,19 @@ class Animal {
     }
 
     pushIdtoStatus(id, status_id){
-        return knex('status').returning('id').where({'status.id': status_id}).update({animal_ids: knex.raw('array_append(animal_ids,?)',[id])});
+        return knex('status').returning('id').where({'status.id': status_id}).update({animal_ids: knex.raw('array_append(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 
     pushIdtoType(id, type_id){
-        return knex('types').returning('id').where({'types.id': type_id}).update({animal_ids: knex.raw('array_append(animal_ids,?)',[id])});
+        return knex('types').returning('id').where({'types.id': type_id}).update({animal_ids: knex.raw('array_append(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 
     pullIdsfromStatus(id) {
-        return knex('status').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id])});
+        return knex('status').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 
     pullIdsfromTypes(id) {
-        return knex('types').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id])});
+        return knex('types').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 }
 module.exports = Animal;
