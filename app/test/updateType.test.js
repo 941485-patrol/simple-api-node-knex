@@ -17,7 +17,11 @@ describe('Update Type', function(){
         await agent
         .put(`/api/type/${type.id}`)
         .send({name:'type88', environment:'environment88'})
-        .expect(301)
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Type Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/type/${type.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Avoid duplicate entry on update', async function(){
@@ -37,7 +41,11 @@ describe('Update Type', function(){
         await agent
         .put(`/api/type/${type.id}`)
         .send({name:'type88', environment:'environment88'})
-        .expect(301)
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Type Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/type/${type.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Check if animal type_id is updated also', async function(){
@@ -120,7 +128,11 @@ describe('Update Type', function(){
         await agent
         .put(`/api/type/${type.id}`)
         .send({name:'type8', environment:'environment8'})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Type Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/type/${type.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Logout then', function(done){

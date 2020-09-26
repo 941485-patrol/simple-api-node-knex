@@ -22,7 +22,7 @@ const updateStatus = async function (req, res, next) {
         }
         var updated = await updateStatusService(oldStatus.id, newStatus.name, newStatus.description);
         if (updated.length == 0) throw new Error('Error updating status.');
-        res.redirect(301, req.originalUrl);
+        res.status(200).json({'message': 'Status Updated.', '_this': req.originalUrl})
     } catch (error) {
         Errmsg(error, res);
     }

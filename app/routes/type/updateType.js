@@ -22,7 +22,7 @@ const updateType = async (req, res, next) => {
         }
         var updated = await updateTypeService(oldType.id, newType.name, newType.environment);
         if (updated.length == 0) throw new Error('Error updating type.');
-        res.redirect(301, req.originalUrl);
+        res.status(200).json({'message': 'Type Updated.', '_this': req.originalUrl})
     } catch (error) {
         Errormsg(error, res);
     }

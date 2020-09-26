@@ -17,7 +17,11 @@ describe('Update Status', function(){
         await agent
         .put(`/api/status/${status.id}`)
         .send({name:'status99', description:'description99'})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Status Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/status/${status.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Avoid duplicate entry on update', async function(){
@@ -37,7 +41,11 @@ describe('Update Status', function(){
         await agent
         .put(`/api/status/${status.id}`)
         .send({name:'status99', description:'description99'})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Status Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/status/${status.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Check if animal status_id is updated also', async function(){
@@ -120,7 +128,11 @@ describe('Update Status', function(){
         await agent
         .put(`/api/status/${status.id}`)
         .send({name:'status9', description:'description9'})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Status Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/status/${status.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Logout then', function(done){

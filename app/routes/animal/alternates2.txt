@@ -38,7 +38,7 @@
   //   if (updatedAnimal.nModified == 0) throw new Error("Wrong id");
   //   await Type.updateOne({animal_ids: req.params.id}, pull);
   //   await Type.updateOne({_id: update.type_id}, push);
-  //   res.redirect(301, req.originalUrl);
+  //   res.status(200).json({'message': 'Updated.', '_this': req.originalUrl})
   // } catch (error) {
   //   Errormsg(error, res);
   // } 

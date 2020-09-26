@@ -19,7 +19,11 @@ describe('Update Animal', function(){
         await agent
         .put(`/api/animal/${animalToUpd.id}`)
         .send({name:'animal111', description:'description111', type_id:type.id, status_id:status.id})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Update an animal again with same credentials', async function(){
@@ -29,7 +33,11 @@ describe('Update Animal', function(){
         await agent
         .put(`/api/animal/${animalToUpd.id}`)
         .send({name:'animal111', description:'description111', type_id:type.id, status_id:status.id})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     it('Refresh database (bring back original value from seed', async function(){
@@ -39,7 +47,11 @@ describe('Update Animal', function(){
         await agent
         .put(`/api/animal/${animalToUpd.id}`)
         .send({name:'animal11', description:'description11', type_id:type.id, status_id:status.id})
-        .expect(301);
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+            if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+        })
     });
 
     // it('Check updated status animal id', async function(){
@@ -100,7 +112,11 @@ describe('Update Animal', function(){
     //     await agent
     //     .put(`/api/animal/${animalToUpd._id}`)
     //     .send({name:'animal11', description:'description11', type_id:origType._id, status_id:origStat._id})
-    //     .expect(301);
+    // .expect(200)
+    // .expect(function(res){
+    //     if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+    //     if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+    // })
     // });
 
     // it('Refresh database (Bring back deleted status)', function(done){
