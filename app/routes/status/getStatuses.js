@@ -33,6 +33,7 @@ const getStatuses = async function(req, res, next){
             statusResults['items_this_page'] = statuses.length;
             statusResults['total_items'] = statusCount;
             statusResults['total_pages'] = totalPages;
+            statusResults['current_page'] = page;
             statusResults['hasNext'] = page < totalPages ? true : false;
             statusResults['hasPrev'] = page != 1 ? true : false;
             statusResults['results'] = statusArr;

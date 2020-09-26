@@ -34,6 +34,7 @@ const getTypes = async (req, res, next)=>
       typeResults['items_this_page'] = types.length;
       typeResults['total_items'] = typeCount;
       typeResults['total_pages'] = totalPages;
+      typeResults['current_page'] = page;
       typeResults['hasNext'] = page < totalPages ? true : false;
       typeResults['hasPrev'] = page != 1 ? true : false;
       typeResults['results'] = typeArr;

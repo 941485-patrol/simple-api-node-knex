@@ -23,6 +23,7 @@ const getAnimals = async (req, res, next)=>
         animalResults['items_this_page'] = animals.length;
         animalResults['total_items'] = animalCount;
         animalResults['total_pages'] = totalPages;
+        animalResults['current_page'] = page;
         animalResults['hasNext'] = page < totalPages ? true : false;
         animalResults['hasPrev'] = page != 1 ? true : false;
         animalResults['results'] = animalArr;
