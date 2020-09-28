@@ -56,11 +56,11 @@ class Animal {
     }
 
     pullIdsfromStatus(id) {
-        return knex('status').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
+        return knex('status').returning('id').whereRaw('?=ANY(animal_ids)',[id]).update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 
     pullIdsfromTypes(id) {
-        return knex('types').returning('id').update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
+        return knex('types').returning('id').whereRaw('?=ANY(animal_ids)',[id]).update({animal_ids: knex.raw('array_remove(animal_ids,?)',[id]), updated_at: knex.raw('NOW()')});
     }
 }
 module.exports = Animal;

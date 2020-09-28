@@ -40,100 +40,139 @@ describe('Update Animal', function(){
         })
     });
 
-    it('Refresh database (bring back original value from seed', async function(){
-        var animalToUpd = await knex('animals').select('*').where('name', 'animal111').first();
-        var type = await knex('types').select('*').where('id',4).first();
+    // it('Refresh database (bring back original value from seed', async function(){
+    //     var animalToUpd = await knex('animals').select('*').where('name', 'animal111').first();
+    //     var type = await knex('types').select('*').where('id',4).first();
+    //     var status = await knex('status').select('*').where('id',3).first();
+    //     await agent
+    //     .put(`/api/animal/${animalToUpd.id}`)
+    //     .send({name:'animal11', description:'description11', type_id:type.id, status_id:status.id})
+    //     .expect(200)
+    //     .expect(function(res){
+    //         if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+    //         if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+    //     })
+    // });
+
+    it('Check original status if animal is removed', async function(){
         var status = await knex('status').select('*').where('id',3).first();
+        var animal = await knex('animals').select('*').where('id', 11).first();
         await agent
-        .put(`/api/animal/${animalToUpd.id}`)
-        .send({name:'animal11', description:'description11', type_id:type.id, status_id:status.id})
+        .get(`/api/status/${status.id}`)
         .expect(200)
         .expect(function(res){
-            if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
-            if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
+            var animals = res.body.animals;
+            var found = animals.filter((anml)=>{
+                return animal.id == anml.id
+            })
+            if (found.length >= 1) throw new Error('Animal id must be removed');
+        })
+    })
+    
+
+    it('Check original type if animal is removed', async function(){
+        var type = await knex('types').select('*').where('id',4).first();
+        var animal = await knex('animals').select('*').where('id', 11).first();
+        await agent
+        .get(`/api/type/${type.id}`)
+        .expect(200)
+        .expect(function(res){
+            var animals = res.body.animals;
+            var found = animals.filter((anml)=>{
+                return animal.id == anml.id
+            })
+            if (found.length >= 1) throw new Error('Animal id must be removed');
+        })
+    })
+
+    it('Check updated status animal id', async function(){
+        var animal = await knex('animals').select('*').where('id', 11).first();
+        var status = await knex('status').select('*').where('id',11).first();
+        await agent
+        .get(`/api/status/${status.id}`)
+        .expect(200)
+        .expect(function(res){
+            var animals = res.body.animals;
+            var found = animals.filter((anml)=>{
+                return animal.id == anml.id
+            })
+            if (found.length == 0) throw new Error('Animal id must be in status.');
+            if (found.length > 1) throw new Error('Animal id must not be displayed twice');
         })
     });
 
-    // it('Check updated status animal id', async function(){
-    //     var status = await Status.findOne({name:'status10'});
-    //     var animal = await Animal.findOne({name:'animal111'});
-    //     await agent
-    //     .get(`/api/status/${status._id}`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         var animals = res.body.animals;
-    //         if (animals[0].animal_id!=animal._id) throw new Error('Animal id must be in status.');
-    //     })
-    // });
+    it('Check updated type animal id', async function(){
+        var type = await knex('types').select('*').where('id',11).first();
+        var animal = await knex('animals').select('*').where('id', 11).first();
+        await agent
+        .get(`/api/type/${type.id}`)
+        .expect(200)
+        .expect(function(res){
+            var animals = res.body.animals;
+            var found = animals.filter((anml)=>{
+                return animal.id == anml.id
+            })
+            if (found.length == 0) throw new Error('Animal id must be in type.');
+            if (found.length > 1) throw new Error('Animal id must not be displayed twice');
+        })
+    });
 
-    // it('Check updated type animal id', async function(){
-    //     var type = await Type.findOne({name:'type11'});
-    //     var animal = await Animal.findOne({name:'animal111'});
-    //     await agent
-    //     .get(`/api/type/${type._id}`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         var animals = res.body.animals;
-    //         if (animals[0].animal_id!=animal._id) throw new Error('Animal id must be in type.');
-    //     })
-    // });
+    it('Delete status to prepare for null test', async function(){
+        var status = await knex('status').select('*').where('id',11).first();
+        await agent
+        .delete(`/api/status/${status.id}`)
+        .expect(200)
+        .expect({'message': 'Status deleted.'});
+    });
 
-    // it('Delete status to prepare for null test', async function(){
-    //     var status = await Status.findOne({name:'status10'});
-    //     await agent
-    //     .delete(`/api/status/${status._id}`)
-    //     .expect(200)
-    //     .expect({'message': 'Status deleted.'});
-    // });
+    it('Delete type to prepare for null test', async function(){
+        var type = await knex('types').select('*').where('id',11).first();
+        await agent
+        .delete(`/api/type/${type.id}`)
+        .expect(200)
+        .expect({'message': 'Type deleted.'});
+    });
 
-    // it('Delete type to prepare for null test', async function(){
-    //     var type = await Type.findOne({name:'type11'});
-    //     await agent
-    //     .delete(`/api/type/${type._id}`)
-    //     .expect(200)
-    //     .expect({'message': 'Type deleted.'});
-    // });
+    it('Check updated animal if type/status id is deleted.', async function(){
+        var animal = await knex('animals').select('*').where('id', 11).first();
+        await agent
+        .get(`/api/animal/${animal.id}`)
+        .expect(200)
+        .expect(function(res){
+            if (res.body.status!=null) throw new Error('Status id must be deleted.');
+            if (res.body.type!=null) throw new Error('Type id must be deleted.');
+        })
+    });
 
-    // it('Check updated animal if type/status id is deleted.', async function(){
-    //     var animal = await Animal.findOne({name:'animal111'});
-    //     await agent
-    //     .get(`/api/animal/${animal._id}`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         if (res.body.status!=null) throw new Error('Status id must be deleted.');
-    //         if (res.body.type!=null) throw new Error('Type id must be deleted.');
-    //     })
-    // });
+    it('Update an animal which has null status/type ids', async function(){
+        var animal = await knex('animals').select('*').where('id', 11).first();
+        var type = await knex('types').select('*').where('id',4).first();
+        var status = await knex('status').select('*').where('id',3).first();
+        await agent
+        .put(`/api/animal/${animal.id}`)
+        .send({name:'animal11', description:'description11', type_id:type.id, status_id:status.id})
+    .expect(200)
+    .expect(function(res){
+        if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
+        if (res.body._this.includes(`/api/animal/${animal.id}`)===false) throw new Error('Test case failed.');
+    })
+    });
 
-    // it('Update an animal which has null status/type ids', async function(){
-    //     var animalToUpd = await Animal.findOne({name:'animal111'});
-    //     var origType = await Type.findOne({name:'type4'});
-    //     var origStat = await Status.findOne({name:'status3'});
-    //     await agent
-    //     .put(`/api/animal/${animalToUpd._id}`)
-    //     .send({name:'animal11', description:'description11', type_id:origType._id, status_id:origStat._id})
-    // .expect(200)
-    // .expect(function(res){
-    //     if (res.body.message.includes('Animal Updated.')===false) throw new Error('Test case failed.');
-    //     if (res.body._this.includes(`/api/animal/${animalToUpd.id}`)===false) throw new Error('Test case failed.');
-    // })
-    // });
+    it('Refresh database (Bring back deleted status but id is different)', function(done){
+        agent
+        .post('/api/status')
+        .send({name:'status11', description:'description11'})
+        .expect(200)
+        .expect({"message": "Status created."}, done);
+    });
 
-    // it('Refresh database (Bring back deleted status)', function(done){
-    //     agent
-    //     .post('/api/status')
-    //     .send({name:'status10', description:'description10'})
-    //     .expect(200)
-    //     .expect({"message": "Status created."}, done);
-    // });
-
-    // it('Refresh database (Bring back deleted type)', function(done){
-    //     agent
-    //     .post('/api/type')
-    //     .send({name:'type11', environment:'environment11'})
-    //     .expect(200)
-    //     .expect({"message": "Type created"}, done);
-    // });
+    it('Refresh database (Bring back deleted type but id is different)', function(done){
+        agent
+        .post('/api/type')
+        .send({name:'type11', environment:'environment11'})
+        .expect(200)
+        .expect({"message": "Type created"}, done);
+    });
 
     it('Error on whitespace url', function(done){
         agent
@@ -255,8 +294,8 @@ describe('Update Animal', function(){
 
     it('Error on updating animal if unauthenticated', async function(){
         var animalToUpd = await knex('animals').select('*').where('name', 'animal11').first();
-        var type = await knex('types').select('*').where('id',11).first();
-        var status = await knex('status').select('*').where('id',11).first();
+        var type = await knex('types').select('*').where('id',4).first();
+        var status = await knex('status').select('*').where('id',3).first();
         await agent
         .put(`/api/animal/${animalToUpd.id}`)
         .send({name:'animal111', description:'description111', type_id:type.id, status_id:status.id})

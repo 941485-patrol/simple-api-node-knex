@@ -41,7 +41,7 @@ const updateAnimal = async (req, res, next) => {
     await pullType(oldAnimal.id);
     var newStatus = await pushStatus(oldAnimal.id, newAnimal.status_id);
     if (newStatus.length == 0) throw new Error('Error pushing status.');
-    var newType = await pushType(oldAnimal.id, newAnimal.status_id);
+    var newType = await pushType(oldAnimal.id, newAnimal.type_id);
     if (newType.length == 0) throw new Error('Error pushing type.');
     res.status(200).json({'message': 'Animal Updated.', '_this': req.originalUrl})
   } catch (error) {
