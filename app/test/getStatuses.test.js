@@ -11,6 +11,16 @@ describe('Get Statuses', function(){
         .expect({"message": "You are now logged in."}, done);
     });
 
+    it('Get all status no pagination', function(done){
+        agent
+        .get('/api/status/all')
+        .expect(200)
+        .expect(function(res){
+            if (res.body.items_this_page != 12) throw new Error('Items must be 12');
+            if (res.body.results.length != 12) throw new Error('Results must be 12');
+        }).end(done);
+    })
+
     it('Get all status page 1', function(done){
         agent
         .get(`/api/status`)

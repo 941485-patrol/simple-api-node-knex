@@ -40,17 +40,20 @@ npm run test
 |POST|/api/user/register|[username][password][repeat_password]|Register a user.
 |POST|/api/user/login|[username][password]|Log in a user.
 |GET|/api/user/logout|None|Log out a user.
-|GET|/api/animal|None|Get all animals.
+|GET|/api/animal/all|None|Get all animals.
+|GET|/api/animal|None|Get all animals with pagination.
 |POST|/api/animal|[name][description][status_id][type_id]|Create an animal.
 |GET|/api/animal/:id|None|Get an animal by id.
 |PUT|/api/animal/:id|[name][description][status_id][type_id]|Update an animal.
 |DELETE|/api/animal/:id|None|Delete an animal.
-|GET|/api/status|None|Get all status.
+|GET|/api/status/all|None|Get all status.
+|GET|/api/status|None|Get all status with pagination.
 |POST|/api/status|[name][description]|Create a status.
 |GET|/api/status/:id|None|Get a status by id.
 |PUT|/api/status/:id|[name][description]|Update a status.
 |DELETE|/api/status/:id|None|Delete a status.
-|GET|/api/type|None|Get all types.
+|GET|/api/type/all|None|Get all types.
+|GET|/api/type|None|Get all types with pagination.
 |POST|/api/type|[name][environment]|Create a type.
 |GET|/api/type/:id|None|Get a type by id.
 |PUT|/api/type/:id|[name][environment]|Update a type.

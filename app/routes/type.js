@@ -8,10 +8,14 @@ const getTypes = require('./type/getTypes');
 const getType = require('./type/getType');
 const updateType = require('./type/updateType');
 const deleteType = require('./type/deleteType');
+const getAll = require('./type/getAll');
 
 router.route('/')
   .get(getTypes)
   .post(upload.none(), createType)
+
+  router.route('/all')
+  .get(getAll)
 
 router.route('/:id')
   .get(getType)

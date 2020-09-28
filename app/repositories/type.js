@@ -5,6 +5,10 @@ class Type {
         this.req = req;
     }
 
+    getAll(){
+        return knex('types').select('*').orderBy('types.id','desc');
+    }
+
     getAllTypes(searchee, perPage, pageSkip, sort){
         return knex('types')
         .select(knex.raw('*, COUNT(id) over()'))

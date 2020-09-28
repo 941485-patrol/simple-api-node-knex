@@ -8,10 +8,14 @@ var createAnimal = require('./animal/createAnimal');
 var getAnimal = require('./animal/getAnimal');
 var updateAnimal = require('./animal/updateAnimal');
 var deleteAnimal = require('./animal/deleteAnimal');
+var getAll = require('./animal/getAll');
 
 router.route('/')
   .get(getAnimals)
   .post(upload.none(), createAnimal)
+
+router.route('/all')
+  .get(getAll)
 
 router.route('/:id')
   .get(getAnimal)

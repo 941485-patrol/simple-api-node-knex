@@ -1,6 +1,7 @@
 var app = require('../server');
 const request = require('supertest');
 const agent = request.agent(app);
+const knex = require('../../knex/knex');
 
 describe('Get Animals', function(){
     it('Login first', function(done){
@@ -10,6 +11,16 @@ describe('Get Animals', function(){
         .expect(200)
         .expect({"message": "You are now logged in."}, done);
     });
+
+    it('Get all animals no pagination', function(done){
+        agent
+        .get('/api/animal/all')
+        .expect(200)
+        .expect(function(res){
+            if (res.body.items_this_page != 12) throw new Error('Items must be 12');
+            if (res.body.results.length != 12) throw new Error('Results must be 12');
+        }).end(done);
+    })
 
     it('Get animals page 1', function(done){
         agent

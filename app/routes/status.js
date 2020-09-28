@@ -8,10 +8,14 @@ const createStatus = require('./status/createStatus');
 const getStatus = require('./status/getStatus');
 const updateStatus = require('./status/updateStatus');
 const deleteStatus = require('./status/deleteStatus');
+const getAll = require('./status/getAll');
 
 router.route('/')
   .get(getStatuses)
   .post(upload.none(), createStatus)
+
+router.route('/all')
+  .get(getAll)
 
 router.route('/:id')
   .get(getStatus)

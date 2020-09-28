@@ -11,6 +11,17 @@ describe('Get Types', function(){
         .expect({"message": "You are now logged in."}, done);
     });
 
+    it('Get all types no pagination', function(done){
+        agent
+        .get('/api/type/all')
+        .expect(200)
+        .expect(function(res){
+            if (res.body.items_this_page != 12) throw new Error('Items must be 12');
+            if (res.body.results.length != 12) throw new Error('Results must be 12');
+        }).end(done);
+    })
+
+
     it('Get all types page 1', function(done){
         agent
         .get(`/api/type`)

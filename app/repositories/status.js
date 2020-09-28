@@ -4,6 +4,10 @@ class Status {
         this.req = req;
     }
 
+    getAll(){
+        return knex('status').select('*').orderBy('status.id','desc');
+    }
+
     getAllStatus(searchee, perPage, pageSkip, sort){
         return knex('status')
         .select(knex.raw('*, COUNT(id) over()'))
