@@ -8,7 +8,7 @@ var statusRouter = require('./routes/status');
 var userRouter = require('./routes/user');
 var cors = require('cors');
 var loginRequired = require('./helpers/loginRequired');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 5000;
 // var setResponse = require('./helpers/setResponse');
 var corsOptions = {
   origin:true,

@@ -1,0 +1,8 @@
+FROM node
+RUN mkdir /app
+WORKDIR /app
+COPY . /app
+RUN npm install pm2 --global
+RUN npm install knex --global
+RUN npm install
+EXPOSE 5000

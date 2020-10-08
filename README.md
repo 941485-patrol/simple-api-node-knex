@@ -31,7 +31,45 @@ npm run dev
 ```sh
 npm run test
 ```
+- Use postman or curl to open website
+
 *Note: Be sure to run postgresql server and create a database before cloning. \
+*Test notes: Be sure to run seeder again after testing.
+
+### Docker instructions
+- Clone repo
+```sh
+git clone https://github.com/941485-patrol/simple-api-node-knex.git
+```
+- Run docker
+```sh
+docker-compose up
+```
+- Configure postgresql
+```sh
+docker-compose run postgres bash
+psql --host=postgres --user=postgres
+\c YOUR_DB_NAME
+exit
+```
+- Migrate database
+```sh
+docker-compose up some-node-api knex  migrate:latest
+```
+
+- Seed database
+```sh
+docker-compose up some-node-api knex seed:run
+```
+
+- Run test and re-seed
+```sh
+docker-compose up some-node-api npm run test
+docker-compose up some-node-api knex seed:run
+```
+
+- Use postman or curl to open website
+
 *Test notes: Be sure to run seeder again after testing.
 
 ### Endpoints
