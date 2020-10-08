@@ -1,3 +1,4 @@
 .env
+database.env
 node_modules
 ecosystem.config.js
