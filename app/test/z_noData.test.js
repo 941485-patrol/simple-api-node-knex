@@ -27,14 +27,14 @@ describe('No data', function(){
         }).end(done);
     });
 
-    // it('Get types no data', function(done){
-    //     agent
-    //     .get(`/api/type/?page=1`)
-    //     .expect(200)
-    //     .expect(function(res){
-    //         if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
-    //     }).end(done);
-    // });
+    it('Get types no data', function(done){
+        agent
+        .get(`/api/type/?page=3`)
+        .expect(200)
+        .expect(function(res){
+            if (res.body.message != 'No data.') throw new Error ('Should be "No data."');
+        }).end(done);
+    });
 
     it('Get status no data', function(done){
         agent
