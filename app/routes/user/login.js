@@ -11,12 +11,23 @@ const login = async function(req, res, next){
         var validUser = validateUser(req.body.password, user.password);
         if (validUser == true) {
             var token = await updateUserToken(user.id);
-            res.cookie('session', token[0].token, {
-                signed:true,
-                sameSite:'none',
-                httpOnly:true,
-                maxAge:180000, // 3 minutes
-            });
+            if (process.env.NODE_ENV == 'production') {
+                res.cookie('session', token[0].token, {
+                    signed:true,
+                    sameSite:'none',
+                    secure:true,
+                    httpOnly:true,
+                    maxAge:180000, // 3 minutes
+                });
+            } else {
+                res.cookie('session', token[0].token, {
+                    signed:true,
+                    sameSite:'none',
+                    httpOnly:true,
+                    maxAge:180000, // 3 minutes
+                });
+            }
+           
             res.status(200).json({"message": "You are now logged in."});
         }
     } catch (error) {
