@@ -16,22 +16,22 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cookie": "^0.4.1",
-    "cookie-parser": "^1.4.5",
+    "cookie": "^0.4.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "joi": "^17.2.1",
-    "knex": "^0.21.5",
-    "multer": "^1.4.2",
+    "dotenv": "^8.6.0",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "knex": "^0.21.21",
+    "multer": "^1.4.4",
     "node-fetch": "^2.6.7",
-    "pg": "^8.3.3"
+    "pg": "^8.8.0"
   },
   "devDependencies": {
     "foreman": "^3.0.1",
-    "mocha": "^8.1.1",
+    "mocha": "^10.0.0",
     "nodemon": "^2.0.19",
     "supertest": "^4.0.2",
-    "supertest-session": "^4.0.0"
+    "supertest-session": "^4.1.0"
   }
 }
