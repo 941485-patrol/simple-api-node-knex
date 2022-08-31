@@ -1,6 +1,7 @@
 #### NodeJS API using ExpressJS, Joi, KnexJS and PostgreSQL.
 ### Demo
-https://some-nodejs-api.herokuapp.com \
+Render :  https://simple-api-node.onrender.com \ 
+Heroku : https://some-nodejs-api.herokuapp.com \
 username: username \
 password: Password1234 \
 *Note: Use [Talend](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=en) or [Postman](https://www.postman.com/) to open the website.
