@@ -30,9 +30,9 @@ const createAnimal = async (req, res, next ) => {
     }
     var create = await createAnimalService(animal.name, animal.description, animal.status_id, animal.type_id);
     if (create.length == 0) throw new Error('Error creating animal.');
-    var status = await pushIdtoStatus(create[0], animal.status_id);
+    var status = await pushIdtoStatus(create[0].id, animal.status_id);
     if (status.length == 0 ) throw new Error('Error pushing status.');
-    var type = await pushIdtoType(create[0], animal.type_id);
+    var type = await pushIdtoType(create[0].id, animal.type_id);
     if (type.length == 0) throw new Error('Error pushing type.');
     res.status(200).json({"message": "Animal created"});
   } catch (error) {

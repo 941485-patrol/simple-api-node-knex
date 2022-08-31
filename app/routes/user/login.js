@@ -19,7 +19,17 @@ const login = async function(req, res, next){
                     httpOnly:true,
                     maxAge:180000, // 3 minutes
                 });
-            } else {
+            } 
+            if (process.env.NODE_ENV == 'development') {
+                res.cookie('session', token[0].token, {
+                    signed:true,
+                    sameSite:'none',
+                    secure:true,
+                    httpOnly:true,
+                    maxAge:180000, // 3 minutes
+                });
+            }
+            if (process.env.NODE_ENV == 'testing') {
                 res.cookie('session', token[0].token, {
                     signed:true,
                     sameSite:'none',
@@ -27,7 +37,6 @@ const login = async function(req, res, next){
                     maxAge:180000, // 3 minutes
                 });
             }
-           
             res.status(200).json({"message": "You are now logged in."});
         }
     } catch (error) {

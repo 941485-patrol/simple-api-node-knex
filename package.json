@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nf --procfile Procfile start testing",
-    "dev": "nf --procfile Procfile start api",
+    "testHeroku": "nf --procfile Procfile start testing",
+    "devHeroku": "nf --procfile Procfile start api",
     "knex": "knex",
-    "test1": "mocha app/test",
-    "dev1": "nodemon --require dotenv/config app/server.js",
+    "test": "mocha app/test",
+    "dev": "nodemon --require dotenv/config app/server.js",
     "web": "node app/server.js"
   },
   "keywords": [],
@@ -16,22 +16,22 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cookie": "^0.4.2",
+    "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^8.6.0",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "joi": "^17.6.0",
-    "knex": "^0.21.21",
-    "multer": "^1.4.4",
-    "node-fetch": "^2.6.7",
+    "knex": "^2.2.0",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.2.10",
     "pg": "^8.8.0"
   },
   "devDependencies": {
     "foreman": "^3.0.1",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.19",
-    "supertest": "^4.0.2",
+    "supertest": "^6.2.4",
     "supertest-session": "^4.1.0"
   }
 }
