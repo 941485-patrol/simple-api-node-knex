@@ -6,6 +6,7 @@
   "scripts": {
     "testHeroku": "nf --procfile Procfile start testing",
     "devHeroku": "nf --procfile Procfile start api",
+    "buildOnRender": "npm install && npm run knex migrate:latest && npm run knex seed:run",
     "knex": "knex",
     "test": "mocha app/test",
     "dev": "nodemon --require dotenv/config app/server.js",
